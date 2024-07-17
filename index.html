@@ -21,7 +21,7 @@
         .Nystatyna-dojelitowo { color: #2ecc71; }
         .Amotaks { color: #e74c3c; }
 
-        /* Stylizacja ikony ptaszka */
+        /* Stylizacja ikony X */
         .checkmark {
             position: relative;
             display: inline-block;
@@ -32,24 +32,21 @@
             vertical-align: middle;
             margin-right: 8px;
             cursor: pointer;
-        }
-        .checkmark::before {
-            content: '';
-            position: absolute;
-            display: none;
-            left: 5px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
+            text-align: center;
+            line-height: 16px;
+            font-size: 12px;
+            color: white;
         }
         .checkmark.checked {
-            background-color: green;
+            background-color: red;
         }
         .checkmark.checked::before {
-            display: block;
+            content: 'X';
+        }
+        .time-taken {
+            font-size: 0.8em;
+            color: #888;
+            margin-left: 8px;
         }
     </style>
 </head>
@@ -69,13 +66,20 @@
     </table>
 
     <script>
-        // Funkcja zwracająca formatowaną bieżącą datę (dd.mm.yyyy)
+        // Funkcja zwracająca formatowaną bieżącą datę (dd.mm)
         function getFormattedDate() {
             const today = new Date();
             const day = String(today.getDate()).padStart(2, '0');
             const month = String(today.getMonth() + 1).padStart(2, '0'); // Miesiące są indeksowane od 0
-            const year = today.getFullYear();
-            return `${day}.${month}.${year}`;
+            return `${day}.${month}`;
+        }
+
+        // Funkcja zwracająca formatowaną bieżącą godzinę (hh:mm)
+        function getFormattedTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            return `${hours}:${minutes}`;
         }
 
         // Funkcja generująca dane leków na podstawie bieżącej daty
@@ -92,28 +96,28 @@
                 return savedMedsData;
             } else {
                 const medsData = [
-                    { date: currentDate, time: '8:00', med: 'Lacidofil', taken: false },
-                    { date: currentDate, time: '8:00', med: 'Octeangín', taken: false },
-                    { date: currentDate, time: '8:15', med: 'Glimbax', taken: false },
-                    { date: currentDate, time: '8:30', med: 'Corsodyl', taken: false },
-                    { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina', taken: false },
-                    { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo', taken: false },
-                    { date: currentDate, time: '11:00', med: 'Amotaks', taken: false },
-                    { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina', taken: false },
-                    { date: currentDate, time: '16:00', med: 'Octeangín', taken: false },
-                    { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo', taken: false },
-                    { date: currentDate, time: '17:30', med: 'Lacidofil', taken: false },
-                    { date: currentDate, time: '18:00', med: 'Glimbax', taken: false },
-                    { date: currentDate, time: '18:30', med: 'Corsodyl', taken: false },
-                    { date: currentDate, time: '19:00', med: 'Amotaks', taken: false },
-                    { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina', taken: false },
-                    { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo', taken: false },
-                    { date: currentDate, time: '20:30', med: 'Lacidofil', taken: false },
-                    { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina', taken: false },
-                    { date: currentDate, time: '22:30', med: 'Octeangín', taken: false },
-                    { date: currentDate, time: '23:00', med: 'Corsodyl', taken: false },
-                    { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo', taken: false },
-                    { date: currentDate, time: '3:00', med: 'Amotaks', taken: false }
+                    { date: currentDate, time: '8:00', med: 'Lacidofil' },
+                    { date: currentDate, time: '8:00', med: 'Octeangín' },
+                    { date: currentDate, time: '8:15', med: 'Glimbax' },
+                    { date: currentDate, time: '8:30', med: 'Corsodyl' },
+                    { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina' },
+                    { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo' },
+                    { date: currentDate, time: '11:00', med: 'Amotaks' },
+                    { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina' },
+                    { date: currentDate, time: '16:00', med: 'Octeangín' },
+                    { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo' },
+                    { date: currentDate, time: '17:30', med: 'Lacidofil' },
+                    { date: currentDate, time: '18:00', med: 'Glimbax' },
+                    { date: currentDate, time: '18:30', med: 'Corsodyl' },
+                    { date: currentDate, time: '19:00', med: 'Amotaks' },
+                    { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina' },
+                    { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo' },
+                    { date: currentDate, time: '20:30', med: 'Lacidofil' },
+                    { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina' },
+                    { date: currentDate, time: '22:30', med: 'Octeangín' },
+                    { date: currentDate, time: '23:00', med: 'Corsodyl' },
+                    { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo' },
+                    { date: currentDate, time: '3:00', med: 'Amotaks' }
                 ];
 
                 localStorage.setItem('medsData', JSON.stringify(medsData));
@@ -131,30 +135,37 @@
                 row.innerHTML = `
                     <td>${entry.date}</td>
                     <td>${entry.time}</td>
-                    <td id="medName-${index}" class="medName ${entry.med.replace(/\s+/g, '-')}${entry.taken ? ' taken' : ''}" onclick="toggleTaken(${index})">${entry.med}</td>
-                    <td><div class="checkmark ${entry.taken ? 'checked' : ''}" onclick="toggleTaken(${index})"></div></td>
+                    <td id="medName-${index}" class="medName ${entry.taken ? 'taken' : ''} ${entry.med.replace(/\s+/g, '-')}">${entry.med}</td>
+                    <td>
+                        <span id="check-${index}" class="checkmark ${entry.taken ? 'checked' : ''}" onclick="markAsTaken(${index})"></span>
+                        <span id="time-taken-${index}" class="time-taken">${entry.timeTaken || ''}</span>
+                    </td>
                 `;
                 tableBody.appendChild(row);
 
-                if (entry.taken) {
-                    document.getElementById(`medName-${index}`).classList.add('taken');
-                }
+                document.getElementById(`medName-${index}`).addEventListener('click', () => markAsTaken(index));
             });
 
             loadProgress();
         }
 
-        function toggleTaken(index) {
-            medsData[index].taken = !medsData[index].taken;
+        function markAsTaken(index) {
+            const checkBox = document.getElementById(`check-${index}`);
             const medName = document.getElementById(`medName-${index}`);
-            const checkmark = document.querySelector(`#medName-${index} + .checkmark`);
+            const timeTaken = document.getElementById(`time-taken-${index}`);
             
-            if (medsData[index].taken) {
+            if (!medsData[index].taken) {
+                medsData[index].taken = true;
+                medsData[index].timeTaken = getFormattedTime();
+                checkBox.classList.add('checked');
                 medName.classList.add('taken');
-                checkmark.classList.add('checked');
+                timeTaken.textContent = medsData[index].timeTaken;
             } else {
+                medsData[index].taken = false;
+                medsData[index].timeTaken = '';
+                checkBox.classList.remove('checked');
                 medName.classList.remove('taken');
-                checkmark.classList.remove('checked');
+                timeTaken.textContent = '';
             }
 
             saveProgress();
@@ -170,24 +181,17 @@
                 const savedMedsData = JSON.parse(savedData);
                 savedMedsData.forEach((entry, index) => {
                     medsData[index].taken = entry.taken;
-                    const medName = document.getElementById(`medName-${index}`);
-                    const checkmark = document.querySelector(`#medName-${index} + .checkmark`);
-                    
+                    medsData[index].timeTaken = entry.timeTaken;
                     if (entry.taken) {
-                        medName.classList.add('taken');
-                        checkmark.classList.add('checked');
-                    } else {
-                        medName.classList.remove('taken');
-                        checkmark.classList.remove('checked');
+                        document.getElementById(`check-${index}`).classList.add('checked');
+                        document.getElementById(`medName-${index}`).classList.add('taken');
+                        document.getElementById(`time-taken-${index}`).textContent = entry.timeTaken;
                     }
                 });
             }
         }
 
-        // Uruchomienie generowania tabeli po załadowaniu strony
-        window.onload = function () {
-            createTable();
-        };
+        window.onload = createTable;
     </script>
 </body>
 </html>
