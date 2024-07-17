@@ -1,3 +1,6 @@
+// Załaduj dźwięk alarmu - przykładowy dźwięk z internetu
+const alarmSound = new Audio('https://freesound.org/s/35809/');
+
 // Funkcja zwracająca formatowaną bieżącą datę (dd.mm.yyyy)
 function getFormattedDate() {
     const today = new Date();
@@ -9,46 +12,31 @@ function getFormattedDate() {
 
 // Funkcja generująca dane leków na podstawie bieżącej daty
 function getMedsData() {
-    let savedData = localStorage.getItem('medsData');
-    let savedMedsData = [];
-    if (savedData) {
-        savedMedsData = JSON.parse(savedData);
-    }
-
     const currentDate = getFormattedDate();
-
-    if (savedMedsData.length > 0 && savedMedsData[0].date === currentDate) {
-        return savedMedsData;
-    } else {
-        const medsData = [
-            { date: currentDate, time: '8:00', med: 'Lacidofil' },
-            { date: currentDate, time: '8:00', med: 'Octeangín' },
-            { date: currentDate, time: '8:15', med: 'Glimbax' },
-            { date: currentDate, time: '8:30', med: 'Corsodyl' },
-            { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '11:00', med: 'Amotaks' },
-            { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '16:00', med: 'Octeangín' },
-            { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '17:30', med: 'Lacidofil' },
-            { date: currentDate, time: '18:00', med: 'Glimbax' },
-            { date: currentDate, time: '18:30', med: 'Corsodyl' },
-            { date: currentDate, time: '19:00', med: 'Amotaks' },
-            { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '20:30', med: 'Lacidofil' },
-            { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '22:30', med: 'Octeangín' },
-            { date: currentDate, time: '23:00', med: 'Corsodyl' },
-            { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '3:00', med: 'Amotaks' }
-        ];
-
-        localStorage.setItem('medsData', JSON.stringify(medsData));
-
-        return medsData;
-    }
+    return [
+        { date: currentDate, time: '8:00', med: 'Lacidofil' },
+        { date: currentDate, time: '8:00', med: 'Octeangín' },
+        { date: currentDate, time: '8:15', med: 'Glimbax' },
+        { date: currentDate, time: '8:30', med: 'Corsodyl' },
+        { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina' },
+        { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo' },
+        { date: currentDate, time: '11:00', med: 'Amotaks' },
+        { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina' },
+        { date: currentDate, time: '16:00', med: 'Octeangín' },
+        { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo' },
+        { date: currentDate, time: '17:30', med: 'Lacidofil' },
+        { date: currentDate, time: '18:00', med: 'Glimbax' },
+        { date: currentDate, time: '18:30', med: 'Corsodyl' },
+        { date: currentDate, time: '19:00', med: 'Amotaks' },
+        { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina' },
+        { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo' },
+        { date: currentDate, time: '20:30', med: 'Lacidofil' },
+        { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina' },
+        { date: currentDate, time: '22:30', med: 'Octeangín' },
+        { date: currentDate, time: '23:00', med: 'Corsodyl' },
+        { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo' },
+        { date: currentDate, time: '3:00', med: 'Amotaks' }
+    ];
 }
 
 let medsData = getMedsData();
@@ -60,14 +48,10 @@ function createTable() {
         row.innerHTML = `
             <td>${entry.date}</td>
             <td>${entry.time}</td>
-            <td id="medName-${index}" class="${entry.taken ? 'taken' : ''}">${entry.med}</td>
+            <td>${entry.med}</td>
             <td><input type="checkbox" id="check-${index}" onclick="markAsTaken(${index})"></td>
         `;
         tableBody.appendChild(row);
-
-        if (entry.taken) {
-            document.getElementById(`check-${index}`).checked = true;
-        }
     });
 
     loadProgress();
@@ -75,14 +59,11 @@ function createTable() {
 
 function markAsTaken(index) {
     const checkBox = document.getElementById(`check-${index}`);
-    const medName = document.getElementById(`medName-${index}`);
-    
     if (checkBox.checked) {
         medsData[index].taken = true;
-        medName.classList.add('taken'); // Dodaj klasę 'taken' do skreślenia nazwy leku
+        checkTimeForAlarm(); // Sprawdź czas po oznaczeniu leku
     } else {
         medsData[index].taken = false;
-        medName.classList.remove('taken'); // Usuń klasę 'taken' jeśli checkbox nie jest zaznaczony
     }
 
     saveProgress();
@@ -100,10 +81,22 @@ function loadProgress() {
             medsData[index].taken = entry.taken;
             if (entry.taken) {
                 document.getElementById(`check-${index}`).checked = true;
-                document.getElementById(`medName-${index}`).classList.add('taken');
             }
         });
     }
 }
 
+// Funkcja do sprawdzania czasu i odtwarzania alarmu
+function checkTimeForAlarm() {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // Przykładowe warunki na odtworzenie dźwięku alarmowego (zmień warunki na swoje potrzeby)
+    if ((hours === 8 && minutes === 0) || (hours === 11 && minutes === 0) || (hours === 19 && minutes === 0)) {
+        alarmSound.play(); // Odtwórz dźwięk alarmowy
+    }
+}
+
+// Uruchomienie generowania tabeli po załadowaniu strony
 window.onload = createTable;
