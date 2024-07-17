@@ -21,28 +21,28 @@ function getMedsData() {
         return savedMedsData;
     } else {
         const medsData = [
-            { date: currentDate, time: '8:00', med: 'Lacidofil' },
-            { date: currentDate, time: '8:00', med: 'Octeangín' },
-            { date: currentDate, time: '8:15', med: 'Glimbax' },
-            { date: currentDate, time: '8:30', med: 'Corsodyl' },
-            { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '11:00', med: 'Amotaks' },
-            { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '16:00', med: 'Octeangín' },
-            { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '17:30', med: 'Lacidofil' },
-            { date: currentDate, time: '18:00', med: 'Glimbax' },
-            { date: currentDate, time: '18:30', med: 'Corsodyl' },
-            { date: currentDate, time: '19:00', med: 'Amotaks' },
-            { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '20:30', med: 'Lacidofil' },
-            { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina' },
-            { date: currentDate, time: '22:30', med: 'Octeangín' },
-            { date: currentDate, time: '23:00', med: 'Corsodyl' },
-            { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo' },
-            { date: currentDate, time: '3:00', med: 'Amotaks' }
+            { date: currentDate, time: '8:00', med: 'Lacidofil', taken: false },
+            { date: currentDate, time: '8:00', med: 'Octeangín', taken: false },
+            { date: currentDate, time: '8:15', med: 'Glimbax', taken: false },
+            { date: currentDate, time: '8:30', med: 'Corsodyl', taken: false },
+            { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina', taken: false },
+            { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo', taken: false },
+            { date: currentDate, time: '11:00', med: 'Amotaks', taken: false },
+            { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina', taken: false },
+            { date: currentDate, time: '16:00', med: 'Octeangín', taken: false },
+            { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo', taken: false },
+            { date: currentDate, time: '17:30', med: 'Lacidofil', taken: false },
+            { date: currentDate, time: '18:00', med: 'Glimbax', taken: false },
+            { date: currentDate, time: '18:30', med: 'Corsodyl', taken: false },
+            { date: currentDate, time: '19:00', med: 'Amotaks', taken: false },
+            { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina', taken: false },
+            { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo', taken: false },
+            { date: currentDate, time: '20:30', med: 'Lacidofil', taken: false },
+            { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina', taken: false },
+            { date: currentDate, time: '22:30', med: 'Octeangín', taken: false },
+            { date: currentDate, time: '23:00', med: 'Corsodyl', taken: false },
+            { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo', taken: false },
+            { date: currentDate, time: '3:00', med: 'Amotaks', taken: false }
         ];
 
         localStorage.setItem('medsData', JSON.stringify(medsData));
@@ -61,29 +61,27 @@ function createTable() {
             <td>${entry.date}</td>
             <td>${entry.time}</td>
             <td id="medName-${index}" class="${entry.taken ? 'taken' : ''}">${entry.med}</td>
-            <td><input type="checkbox" id="check-${index}" onclick="markAsTaken(${index})"></td>
         `;
         tableBody.appendChild(row);
 
+        // Dodanie obsługi kliknięcia na nazwę leku
+        row.addEventListener('click', () => {
+            toggleTaken(index); // Przełącz stan wzięcia leku
+        });
+
         if (entry.taken) {
-            document.getElementById(`check-${index}`).checked = true;
+            document.getElementById(`medName-${index}`).classList.add('taken');
         }
     });
 
     loadProgress();
 }
 
-function markAsTaken(index) {
-    const checkBox = document.getElementById(`check-${index}`);
+function toggleTaken(index) {
+    medsData[index].taken = !medsData[index].taken; // Odwróć stan wzięcia leku
+
     const medName = document.getElementById(`medName-${index}`);
-    
-    if (checkBox.checked) {
-        medsData[index].taken = true;
-        medName.classList.add('taken'); // Dodaj klasę 'taken' do skreślenia nazwy leku
-    } else {
-        medsData[index].taken = false;
-        medName.classList.remove('taken'); // Usuń klasę 'taken' jeśli checkbox nie jest zaznaczony
-    }
+    medName.classList.toggle('taken'); // Przełącz klasę 'taken' dla skreślenia nazwy leku
 
     saveProgress();
 }
@@ -99,7 +97,6 @@ function loadProgress() {
         savedMedsData.forEach((entry, index) => {
             medsData[index].taken = entry.taken;
             if (entry.taken) {
-                document.getElementById(`check-${index}`).checked = true;
                 document.getElementById(`medName-${index}`).classList.add('taken');
             }
         });
