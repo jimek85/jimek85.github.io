@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracker Leków</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f4f4f4;
+        }
+        .checked {
+            background-color: #d4edda;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tracker Leków</h1>
+    <table id="medsTable">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Godzina</th>
+                <th>Lek</th>
+                <th>Przyjęto (X)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Dynamiczne wiersze zostaną dodane przez JavaScript -->
+        </tbody>
+    </table>
+    <button onclick="saveProgress()">Zapisz</button>
+    <script src="script.js"></script>
+</body>
+</html>
