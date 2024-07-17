@@ -31,6 +31,7 @@
             border-radius: 50%;
             vertical-align: middle;
             margin-right: 8px;
+            cursor: pointer;
         }
         .checkmark::before {
             content: '';
@@ -43,6 +44,9 @@
             border: solid white;
             border-width: 0 2px 2px 0;
             transform: rotate(45deg);
+        }
+        .checkmark.checked {
+            background-color: green;
         }
         .checkmark.checked::before {
             display: block;
@@ -127,7 +131,7 @@
                 row.innerHTML = `
                     <td>${entry.date}</td>
                     <td>${entry.time}</td>
-                    <td id="medName-${index}" class="medName ${entry.med.replace(/\s+/g, '-')}${entry.taken ? ' taken' : ''}">${entry.med}</td>
+                    <td id="medName-${index}" class="medName ${entry.med.replace(/\s+/g, '-')}${entry.taken ? ' taken' : ''}" onclick="toggleTaken(${index})">${entry.med}</td>
                     <td><div class="checkmark ${entry.taken ? 'checked' : ''}" onclick="toggleTaken(${index})"></div></td>
                 `;
                 tableBody.appendChild(row);
@@ -143,7 +147,7 @@
         function toggleTaken(index) {
             medsData[index].taken = !medsData[index].taken;
             const medName = document.getElementById(`medName-${index}`);
-            const checkmark = document.querySelector(`#medName-${index} .checkmark`);
+            const checkmark = document.querySelector(`#medName-${index} + .checkmark`);
             
             if (medsData[index].taken) {
                 medName.classList.add('taken');
@@ -167,7 +171,7 @@
                 savedMedsData.forEach((entry, index) => {
                     medsData[index].taken = entry.taken;
                     const medName = document.getElementById(`medName-${index}`);
-                    const checkmark = document.querySelector(`#medName-${index} .checkmark`);
+                    const checkmark = document.querySelector(`#medName-${index} + .checkmark`);
                     
                     if (entry.taken) {
                         medName.classList.add('taken');
