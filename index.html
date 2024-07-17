@@ -8,6 +8,45 @@
         .taken {
             text-decoration: line-through; /* Stylizacja dla skreślonych nazw leków */
         }
+        /* Dodatkowe style dla kolorowych nazw leków */
+        .medName {
+            font-weight: bold;
+            cursor: pointer; /* Kursor zmienia się na wskaźnik po najechaniu */
+        }
+        .Lacidofil { color: #1abc9c; }
+        .Octeangín { color: #3498db; }
+        .Glimbax { color: #9b59b6; }
+        .Corsodyl { color: #e67e22; }
+        .Nystatyna-zawiesina { color: #f1c40f; }
+        .Nystatyna-dojelitowo { color: #2ecc71; }
+        .Amotaks { color: #e74c3c; }
+
+        /* Stylizacja ikony ptaszka */
+        .checkmark {
+            position: relative;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            background-color: #ccc;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+        .checkmark::before {
+            content: '';
+            position: absolute;
+            display: none;
+            left: 5px;
+            top: 2px;
+            width: 5px;
+            height: 10px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .checkmark.checked::before {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -25,6 +64,126 @@
         </tbody>
     </table>
 
-    <script src="script.js"></script>
+    <script>
+        // Funkcja zwracająca formatowaną bieżącą datę (dd.mm.yyyy)
+        function getFormattedDate() {
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Miesiące są indeksowane od 0
+            const year = today.getFullYear();
+            return `${day}.${month}.${year}`;
+        }
+
+        // Funkcja generująca dane leków na podstawie bieżącej daty
+        function getMedsData() {
+            let savedData = localStorage.getItem('medsData');
+            let savedMedsData = [];
+            if (savedData) {
+                savedMedsData = JSON.parse(savedData);
+            }
+
+            const currentDate = getFormattedDate();
+
+            if (savedMedsData.length > 0 && savedMedsData[0].date === currentDate) {
+                return savedMedsData;
+            } else {
+                const medsData = [
+                    { date: currentDate, time: '8:00', med: 'Lacidofil', taken: false },
+                    { date: currentDate, time: '8:00', med: 'Octeangín', taken: false },
+                    { date: currentDate, time: '8:15', med: 'Glimbax', taken: false },
+                    { date: currentDate, time: '8:30', med: 'Corsodyl', taken: false },
+                    { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina', taken: false },
+                    { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo', taken: false },
+                    { date: currentDate, time: '11:00', med: 'Amotaks', taken: false },
+                    { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina', taken: false },
+                    { date: currentDate, time: '16:00', med: 'Octeangín', taken: false },
+                    { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo', taken: false },
+                    { date: currentDate, time: '17:30', med: 'Lacidofil', taken: false },
+                    { date: currentDate, time: '18:00', med: 'Glimbax', taken: false },
+                    { date: currentDate, time: '18:30', med: 'Corsodyl', taken: false },
+                    { date: currentDate, time: '19:00', med: 'Amotaks', taken: false },
+                    { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina', taken: false },
+                    { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo', taken: false },
+                    { date: currentDate, time: '20:30', med: 'Lacidofil', taken: false },
+                    { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina', taken: false },
+                    { date: currentDate, time: '22:30', med: 'Octeangín', taken: false },
+                    { date: currentDate, time: '23:00', med: 'Corsodyl', taken: false },
+                    { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo', taken: false },
+                    { date: currentDate, time: '3:00', med: 'Amotaks', taken: false }
+                ];
+
+                localStorage.setItem('medsData', JSON.stringify(medsData));
+
+                return medsData;
+            }
+        }
+
+        let medsData = getMedsData();
+
+        function createTable() {
+            const tableBody = document.querySelector('#medsTable tbody');
+            medsData.forEach((entry, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${entry.date}</td>
+                    <td>${entry.time}</td>
+                    <td id="medName-${index}" class="medName ${entry.med.replace(/\s+/g, '-')}${entry.taken ? ' taken' : ''}">${entry.med}</td>
+                    <td><div class="checkmark ${entry.taken ? 'checked' : ''}" onclick="toggleTaken(${index})"></div></td>
+                `;
+                tableBody.appendChild(row);
+
+                if (entry.taken) {
+                    document.getElementById(`medName-${index}`).classList.add('taken');
+                }
+            });
+
+            loadProgress();
+        }
+
+        function toggleTaken(index) {
+            medsData[index].taken = !medsData[index].taken;
+            const medName = document.getElementById(`medName-${index}`);
+            const checkmark = document.querySelector(`#medName-${index} .checkmark`);
+            
+            if (medsData[index].taken) {
+                medName.classList.add('taken');
+                checkmark.classList.add('checked');
+            } else {
+                medName.classList.remove('taken');
+                checkmark.classList.remove('checked');
+            }
+
+            saveProgress();
+        }
+
+        function saveProgress() {
+            localStorage.setItem('medsData', JSON.stringify(medsData));
+        }
+
+        function loadProgress() {
+            const savedData = localStorage.getItem('medsData');
+            if (savedData) {
+                const savedMedsData = JSON.parse(savedData);
+                savedMedsData.forEach((entry, index) => {
+                    medsData[index].taken = entry.taken;
+                    const medName = document.getElementById(`medName-${index}`);
+                    const checkmark = document.querySelector(`#medName-${index} .checkmark`);
+                    
+                    if (entry.taken) {
+                        medName.classList.add('taken');
+                        checkmark.classList.add('checked');
+                    } else {
+                        medName.classList.remove('taken');
+                        checkmark.classList.remove('checked');
+                    }
+                });
+            }
+        }
+
+        // Uruchomienie generowania tabeli po załadowaniu strony
+        window.onload = function () {
+            createTable();
+        };
+    </script>
 </body>
 </html>
