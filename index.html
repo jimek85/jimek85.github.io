@@ -42,6 +42,9 @@
             padding: 8px 10px;
             font-size: 14px;
         }
+        .leave-count {
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -53,6 +56,7 @@
         <tr>
             <th>Osoba</th>
             <th>Zaplanowane dni urlopu</th>
+            <th>Pozostałe dni urlopu</th>
             <th>Dodaj urlop</th>
         </tr>
     </thead>
@@ -62,23 +66,29 @@
 </table>
 
 <script>
-// Inicjalna lista osób z urlopami
+// Inicjalna lista osób z urlopami i ich dniami
 const people = [
-    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17'] },
-    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06'] },
-    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16'] },
-    { name: 'Radosław', leaves: ['2024-05-16', '2024-06-10'] },
-    { name: 'Paulina', leaves: ['2024-03-12', '2024-05-22'] },
-    { name: 'Monika', leaves: ['2024-02-01', '2024-03-14'] },
-    { name: 'Michał', leaves: ['2024-04-24', '2024-06-11'] },
-    { name: 'Dariusz', leaves: ['2024-04-19', '2024-05-23'] },
-    { name: 'Kamil P', leaves: ['2024-03-26', '2024-04-26'] },
-    { name: 'Marcin S', leaves: ['2024-04-17', '2024-05-13'] },
-    { name: 'Daniel', leaves: ['2024-02-20', '2024-05-02'] },
-    { name: 'Agnieszka', leaves: ['2024-03-29', '2024-04-12'] },
-    { name: 'Karolina', leaves: ['2024-04-15', '2024-05-02'] },
-    { name: 'Kamil S', leaves: ['2024-05-10', '2024-06-31'] },
+    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17', '2024-04-22'], maxLeaves: 26 },
+    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06'], maxLeaves: 26 },
+    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16', '2024-05-20'], maxLeaves: 26 },
+    { name: 'Radosław', leaves: ['2024-05-16', '2024-06-10'], maxLeaves: 26 },
+    { name: 'Paulina', leaves: ['2024-03-12', '2024-05-22'], maxLeaves: 26 },
+    { name: 'Monika', leaves: ['2024-02-01', '2024-03-14'], maxLeaves: 26 },
+    { name: 'Michał', leaves: ['2024-04-24', '2024-06-11'], maxLeaves: 26 },
+    { name: 'Dariusz', leaves: ['2024-04-19', '2024-05-23'], maxLeaves: 26 },
+    { name: 'Kamil P', leaves: ['2024-03-26', '2024-04-26'], maxLeaves: 26 },
+    { name: 'Marcin S', leaves: ['2024-04-17', '2024-05-13'], maxLeaves: 26 },
+    { name: 'Daniel', leaves: ['2024-02-20', '2024-05-02'], maxLeaves: 26 },
+    { name: 'Agnieszka', leaves: ['2024-03-29', '2024-04-12'], maxLeaves: 26 },
+    { name: 'Karolina', leaves: ['2024-04-15', '2024-05-02'], maxLeaves: 26 },
+    { name: 'Kamil S', leaves: ['2024-05-10', '2024-06-31'], maxLeaves: 26 },
 ];
+
+// Funkcja do obliczania liczby dni urlopu
+function calculateLeaveCount(leaves) {
+    const uniqueLeaves = [...new Set(leaves)]; // Unikalne dni
+    return uniqueLeaves.length;
+}
 
 // Funkcja generująca tabelę
 function generateTable() {
@@ -90,13 +100,21 @@ function generateTable() {
 
         // Komórka z imieniem
         const nameCell = document.createElement('td');
-        nameCell.textContent = person.name;
+        nameCell.textContent = `${person.name} (${person.maxLeaves} dni)`;
         row.appendChild(nameCell);
 
         // Komórka z urlopami
         const leavesCell = document.createElement('td');
         leavesCell.textContent = person.leaves.length > 0 ? person.leaves.join(', ') : 'Brak urlopów';
         row.appendChild(leavesCell);
+
+        // Komórka z pozostałymi dniami urlopu
+        const remainingDaysCell = document.createElement('td');
+        const usedLeaves = calculateLeaveCount(person.leaves);
+        const remainingDays = person.maxLeaves - usedLeaves;
+        remainingDaysCell.textContent = `${remainingDays} dni`;
+        remainingDaysCell.classList.add('leave-count');
+        row.appendChild(remainingDaysCell);
 
         // Komórka z przyciskiem do dodania urlopu
         const buttonCell = document.createElement('td');
