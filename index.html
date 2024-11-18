@@ -59,7 +59,7 @@
     <h1>Zarządzanie Urlopami</h1>
 
     <!-- Sekcja na górze: Kto jest na urlopie na 3 dni do przodu -->
-    <h3>Na urlopie w najbliższych 3 dniach:</h3>
+    <h3>Na urlopie w najbliższych 3 dniach (od 18.11.2024):</h3>
     <div id="upcomingLeave"></div>
 
     <h2>Pracownicy i ich urlopy:</h2>
@@ -181,90 +181,58 @@
     </table>
 
     <script>
+        // List of users with remaining days and their taken holidays
         const leaveData = {
-            "Paweł": { urlopy: [], dniUrlopu: 7 },
-            "Artur": { urlopy: [], dniUrlopu: 19 },
-            "Ewa": { urlopy: [], dniUrlopu: 4 },
-            "Radosław": { urlopy: [], dniUrlopu: 10 },
-            "Paulina": { urlopy: [], dniUrlopu: 10 },
-            "Monika": { urlopy: [], dniUrlopu: 4 },
-            "Michał": { urlopy: [], dniUrlopu: 4 },
+            "Paweł": { urlopy: ["22.III", "17.IV", "22.IV", "23.IV", "2.V", "29.V", "1.VII", "2.VII", "3.VII", "4.VII", "5.VII", "29.VIII", "30.VIII", "5.IX", "10.X", "23.X", "28.X", "8.XI", "12.XI"], dniUrlopu: 7 },
+            "Artur": { urlopy: ["22.IV", "6.V", "22.VII", "26.VIII", "18.IX", "1.X", "18.X"], dniUrlopu: 19 },
+            "Ewa": { urlopy: ["28.III", "16.IV", "24.IV", "25.IV", "20.V", "28.V", "29.V", "31.V", "20.VI", "8.VII", "9.VII", "10.VII", "11.VII", "12.VII", "8.VIII", "16.VIII", "29.VIII", "30.VIII", "2.IX", "3.IX", "16.X", "17.X", "18.X", "28.X"], dniUrlopu: 4 },
+            "Radosław": { urlopy: ["16.V", "20.V", "10.VI", "17.VI", "22.VII", "23.VII", "24.VII", "25.VII", "26.VII", "29.VII", "16.VIII", "9.IX", "10.IX", "11.X", "22.X", "25.XI"], dniUrlopu: 10 },
+            "Paulina": { urlopy: ["12.III", "13.III", "26.III", "15.IV", "9.V", "22.V", "31.V", "6.VI", "12.VI", "25.VI", "26.VII", "5.IX", "9.IX", "17.IX", "23.IX", "3.X", "4.X", "8.X"], dniUrlopu: 10 },
+            "Monika": { urlopy: ["1.II", "2.II", "5.II", "14.III", "29.III", "22.IV", "2.V", "10.V", "13.V", "31.V", "11.VII", "5.VIII", "6.VIII", "7.VIII", "8.VIII", "9.VIII", "12.VIII", "13.VIII", "14.VIII", "16.VIII", "10.IX", "4.X", "31.X", "6.XI"], dniUrlopu: 4 },
+            "Michał": { urlopy: ["24.IV", "25.IV", "26.IV", "31.V", "11.VI", "25.VI", "15.VII", "16.VII", "17.VII", "29.VII", "30.VII", "31.VII", "1.VIII", "2.VIII", "5.VIII", "6.VIII", "7.VIII", "8.VIII", "9.VIII", "17.IX", "25.IX"], dniUrlopu: 5 },
             "Ewa B": { urlopy: [], dniUrlopu: 4 },
-            "Dariusz": { urlopy: [], dniUrlopu: 8 },
-            "Kamil P": { urlopy: [], dniUrlopu: 10 },
-            "Marcin S": { urlopy: [], dniUrlopu: 10 },
-            "Daniel": { urlopy: [], dniUrlopu: 6 },
-            "Marcin W": { urlopy: [], dniUrlopu: 4 },
-            "Agnieszka": { urlopy: [], dniUrlopu: 2 },
-            "Karolina": { urlopy: [], dniUrlopu: 6 },
-            "Kamil S": { urlopy: [], dniUrlopu: 6 },
-            "Sebastian": { urlopy: [], dniUrlopu: 8 }
+            "Dariusz": { urlopy: ["19.IV", "7.V", "23.V", "3.VI", "19.VI", "27.VI", "4.VII", "18.VII", "19.VII", "29.VII", "30.VII", "31.VII", "1.VIII", "2.VIII", "16.IX", "19.IX", "24.IX", "10.X", "7.XI"], dniUrlopu: 9 },
+            "Kamil P": { urlopy: ["26.III", "26.IV", "13.V", "14.V", "15.V", "16.V", "17.V", "3.VII", "15.VII", "19.IX", "20.IX", "9.X", "12.XI", "27.XII", "30.XII", "31.XII", "2.I", "3.I"], dniUrlopu: 10 },
+            "Marcin S": { urlopy: ["17.IV", "9.V", "15.V", "13.VI", "14.VI", "17.VI", "18.VI", "19.VI", "20.VI", "21.VI", "18.VII", "22.VIII", "23.VIII", "3.IX", "11.IX", "20.IX", "24.IX", "25.IX", "26.IX", "21.X"], dniUrlopu: 10 },
+            "Daniel": { urlopy: ["20.II", "2.V", "13.V", "14.V", "15.V", "16.V", "17.V", "14.VI", "17.VI", "18.VI", "19.VI", "20.VI", "21.VI", "16.VIII", "27.VIII", "30.IX", "1.X", "2.X", "3.X", "4.X"], dniUrlopu: 6 },
+            "Marcin W": { urlopy: ["31.V", "15.VII", "16.VII", "17.VII", "19.VIII", "20.VIII", "21.VIII", "22.VIII", "23.VIII", "26.VIII", "27.VIII", "28.VIII", "29.VIII", "30.VIII", "2.IX", "18.IX", "28.X", "16.XII", "17.XII", "18.XII", "19.XII", "20.XII"], dniUrlopu: 4 },
+            "Agnieszka": { urlopy: ["29.III", "12.IV", "8.V", "31.V", "4.VI", "10.VII", "31.VII", "12.VIII", "13.VIII", "14.VIII", "16.VIII", "19.VIII", "20.VIII", "21.VIII", "22.VIII", "23.VIII", "26.IX", "27.IX", "9.X", "7.XI"], dniUrlopu: 8 },
+            "Karolina": { urlopy: ["15.IV", "2.V", "23.V", "6.VI", "7.VI", "10.VI", "11.VI", "12.VI", "13.VI", "14.VI", "12.VII", "2.VIII", "26.VIII", "13.IX", "17.X", "31.X"], dniUrlopu: 10 },
+            "Kamil S": { urlopy: ["10.V", "13.V", "31.V", "24.VI", "25.VI", "26.VI", "27.VI", "28.VI", "2.IX", "3.IX", "4.IX", "5.IX", "6.IX", "9.IX", "10.IX", "11.IX", "12.IX", "13.IX", "26.IX", "8.XI"], dniUrlopu: 6 },
+            "Sebastian": { urlopy: ["19.II", "14.V", "21.V", "10.IV", "11.IV", "9.VII", "10.VII", "21.VIII", "16.IX", "10.X", "16.X", "6.XI"], dniUrlopu: 8 }
         };
 
+        // Date from which the leaves will be counted (18.11.2024)
+        const startDate = new Date("2024-11-18");
+
+        // Function to add a leave for an employee
         function addLeave(person) {
             const leaveDate = prompt("Wprowadź datę urlopu (yyyy-mm-dd):");
+            const leaveDateObj = new Date(leaveDate);
             if (leaveDate && !leaveData[person].urlopy.includes(leaveDate)) {
-                leaveData[person].urlopy.push(leaveDate);
-                updateTable();
+                if (leaveDateObj >= startDate) {
+                    leaveData[person].urlopy.push(leaveDate);
+                    updateTable();
+                } else {
+                    alert("Urlop nie może być w przeszłości.");
+                }
             } else {
                 alert("Data już została dodana lub nieprawidłowy format!");
             }
         }
 
-        function removeLeave(person, date) {
-            const index = leaveData[person].urlopy.indexOf(date);
-            if (index !== -1) {
-                leaveData[person].urlopy.splice(index, 1);
-                updateTable();
-            }
-        }
-
+        // Function to update the table with the leave data
         function updateTable() {
             Object.keys(leaveData).forEach(person => {
-                const leaveList = document.getElementById(`leaveList-${person}`);
-                leaveList.innerHTML = "";
-                leaveData[person].urlopy.forEach(date => {
-                    const leaveItem = document.createElement("div");
-                    leaveItem.classList.add("leave-item");
-                    leaveItem.innerHTML = `${date} <button class="remove-btn" onclick="removeLeave('${person}', '${date}')">Usuń</button>`;
-                    leaveList.appendChild(leaveItem);
-                });
-                
-                // Obliczanie pozostałych dni urlopu
-                const remainingDays = 26 - leaveData[person].urlopy.length;
-                document.getElementById(`remaining-${person}`).textContent = remainingDays;
+                const leaveListCell = document.getElementById(`leaveList-${person}`);
+                const remainingDaysCell = document.getElementById(`remaining-${person}`);
+                leaveListCell.innerHTML = leaveData[person].urlopy.join(", ");
+                remainingDaysCell.innerHTML = 26 - leaveData[person].dniUrlopu;
             });
         }
 
-        function showUpcomingLeaves() {
-            const upcomingLeave = document.getElementById("upcomingLeave");
-            upcomingLeave.innerHTML = ""; // Clear previous data
-
-            const today = new Date();
-            for (let i = 0; i < 3; i++) {
-                const checkDate = new Date(today);
-                checkDate.setDate(today.getDate() + i);
-                const formattedDate = checkDate.toISOString().split("T")[0];
-
-                const onLeaveList = [];
-                Object.keys(leaveData).forEach(person => {
-                    if (leaveData[person].urlopy.includes(formattedDate)) {
-                        onLeaveList.push(person);
-                    }
-                });
-
-                if (onLeaveList.length > 0) {
-                    const listItem = document.createElement("div");
-                    listItem.innerHTML = `${formattedDate}: ${onLeaveList.join(", ")} na urlopie`;
-                    upcomingLeave.appendChild(listItem);
-                }
-            }
-        }
-
-        // Call on page load
+        // Initial update of the table when the page loads
         updateTable();
-        showUpcomingLeaves();
     </script>
-
 </body>
 </html>
