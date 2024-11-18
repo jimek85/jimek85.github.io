@@ -77,49 +77,19 @@
     </div>
 
     <script>
-        // Dane początkowe - pracownicy z dniami urlopu
-        const vacationData = {
-            "Paweł": {
-                remainingDays: 7,
-                vacationDays: ["19.11.2024", "20.11.2024", "21.11.2024"]
-            },
-            "Artur": {
-                remainingDays: 19,
-                vacationDays: ["22.11.2024", "23.11.2024", "25.11.2024"]
-            },
-            "Ewa": {
-                remainingDays: 4,
-                vacationDays: ["25.11.2024", "26.11.2024"]
-            },
-            "Radosław": {
-                remainingDays: 10,
-                vacationDays: ["25.11.2024", "26.11.2024"]
-            },
-            "Paulina": {
-                remainingDays: 10,
-                vacationDays: ["19.11.2024", "21.11.2024"]
-            },
-            "Monika": {
-                remainingDays: 4,
-                vacationDays: ["19.11.2024", "20.11.2024"]
-            },
-            "Michał": {
-                remainingDays: 4,
-                vacationDays: ["19.11.2024"]
-            },
-            "Artur G": {
-                remainingDays: 15,
-                vacationDays: []
-            },
-            "Kamil P": {
-                remainingDays: 10,
-                vacationDays: ["22.11.2024"]
-            },
-            "Sebastian": {
-                remainingDays: 8,
-                vacationDays: ["19.11.2024"]
-            }
-            // Możesz dodać resztę pracowników w podobny sposób
+        // Zainicjuj dane urlopów z localStorage, jeśli istnieją
+        let vacationData = JSON.parse(localStorage.getItem("vacationData")) || {
+            "Paweł": { remainingDays: 7, vacationDays: ["19.11.2024", "20.11.2024", "21.11.2024"] },
+            "Artur": { remainingDays: 19, vacationDays: ["22.11.2024", "23.11.2024", "25.11.2024"] },
+            "Ewa": { remainingDays: 4, vacationDays: ["25.11.2024", "26.11.2024"] },
+            "Radosław": { remainingDays: 10, vacationDays: ["25.11.2024", "26.11.2024"] },
+            "Paulina": { remainingDays: 10, vacationDays: ["19.11.2024", "21.11.2024"] },
+            "Monika": { remainingDays: 4, vacationDays: ["19.11.2024", "20.11.2024"] },
+            "Michał": { remainingDays: 4, vacationDays: ["19.11.2024"] },
+            "Artur G": { remainingDays: 15, vacationDays: [] },
+            "Kamil P": { remainingDays: 10, vacationDays: ["22.11.2024"] },
+            "Sebastian": { remainingDays: 8, vacationDays: ["19.11.2024"] }
+            // Dodaj resztę pracowników w podobny sposób
         };
 
         // Funkcja renderująca listę pracowników z pozostałymi dniami urlopu
@@ -175,6 +145,7 @@
                 // Dodajemy dzisiejszą datę do urlopu
                 data.vacationDays.push(today);
                 data.remainingDays--; // Zmniejszamy liczbę pozostałych dni
+                updateLocalStorage(); // Zapisz zmiany w localStorage
                 renderVacationList(); // Aktualizujemy widok urlopów
                 renderEmployeeList(); // Aktualizujemy widok pracowników
             } else {
@@ -189,9 +160,15 @@
             if (index > -1) {
                 data.vacationDays.splice(index, 1);
                 data.remainingDays++; // Zwiększamy liczbę pozostałych dni
+                updateLocalStorage(); // Zapisz zmiany w localStorage
                 renderVacationList(); // Aktualizujemy widok urlopów
                 renderEmployeeList(); // Aktualizujemy widok pracowników
             }
+        }
+
+        // Funkcja zapisująca dane do localStorage
+        function updateLocalStorage() {
+            localStorage.setItem("vacationData", JSON.stringify(vacationData));
         }
 
         // Wywołanie funkcji renderujących po załadowaniu strony
