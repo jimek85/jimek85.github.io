@@ -1,51 +1,61 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const leaveForm = document.getElementById("add-leave-form");
-    const leaveList = document.getElementById("leave-list");
-    const filterDate = document.getElementById("filter-date");
+// Inicjalizacja listy urlopów
+const leaveList = [];
 
-    // Tablica przechowująca urlopy
-    let leaves = [];
+// Funkcja renderująca listę urlopów
+function renderLeaveList() {
+  const leaveListElement = document.getElementById('leaveList');
+  leaveListElement.innerHTML = ''; // Czyszczenie obecnej listy
 
-    // Funkcja do renderowania listy urlopów
-    const renderLeaveList = (filteredLeaves = leaves) => {
-        leaveList.innerHTML = "";
-        filteredLeaves.forEach(leave => {
-            const li = document.createElement("li");
-            li.innerHTML = `<span>${leave.name}</span> - <span class="date">${leave.dates}</span>`;
-            leaveList.appendChild(li);
-        });
-    };
+  // Jeśli lista urlopów jest pusta
+  if (leaveList.length === 0) {
+    leaveListElement.innerHTML = '<p>Brak zapisanych urlopów.</p>';
+    return;
+  }
 
-    // Funkcja do dodawania urlopu
-    const addLeave = (name, dates) => {
-        leaves.push({ name, dates });
-        renderLeaveList();  // Po dodaniu nowego urlopu, odświeżamy listę
-    };
+  // Renderowanie urlopów
+  leaveList.forEach((leave) => {
+    const leaveItem = document.createElement('div');
+    leaveItem.classList.add('leave-item');
 
-    // Obsługa formularza
-    leaveForm.addEventListener("submit", (e) => {
-        e.preventDefault();
+    leaveItem.innerHTML = `
+      <p><span>${leave.name}</span> - ${leave.date}</p>
+    `;
 
-        const name = document.getElementById("name").value;
-        const dates = document.getElementById("dates").value;
+    leaveListElement.appendChild(leaveItem);
+  });
+}
 
-        if (name && dates) {
-            addLeave(name, dates);
-            leaveForm.reset();
-        }
-    });
+// Funkcja obsługująca dodanie nowego urlopu
+function addLeave(event) {
+  event.preventDefault();
 
-    // Filtrowanie urlopów po dacie
-    filterDate.addEventListener("input", () => {
-        const dateValue = filterDate.value;
-        if (dateValue) {
-            const filteredLeaves = leaves.filter(leave => leave.dates.includes(dateValue));
-            renderLeaveList(filteredLeaves);
-        } else {
-            renderLeaveList();
-        }
-    });
+  const nameInput = document.getElementById('name');
+  const dateInput = document.getElementById('date');
 
-    // Renderowanie początkowej listy
-    renderLeaveList();
-});
+  // Pobieranie wartości z formularza
+  const name = nameInput.value.trim();
+  const date = dateInput.value;
+
+  // Walidacja danych
+  if (!name || !date) {
+    alert('Proszę uzupełnić wszystkie pola.');
+    return;
+  }
+
+  // Dodanie nowego urlopu do listy
+  leaveList.push({ name, date });
+
+  // Resetowanie formularza
+  nameInput.value = '';
+  dateInput.value = '';
+
+  // Renderowanie zaktualizowanej listy
+  renderLeaveList();
+}
+
+// Inicjalizacja formularza
+const leaveForm = document.getElementById('leaveForm');
+leaveForm.addEventListener('submit', addLeave);
+
+// Pierwsze renderowanie listy urlopów
+renderLeaveList();
