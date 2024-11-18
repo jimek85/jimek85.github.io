@@ -27,6 +27,9 @@
             margin-top: 20px;
             font-weight: bold;
         }
+        input[type="date"] {
+            padding: 5px;
+        }
     </style>
 </head>
 <body>
@@ -77,14 +80,23 @@ const people = [
     { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-05-21', '2024-04-10', '2024-04-11', '2024-07-09', '2024-07-10', '2024-08-21', '2024-09-16', '2024-10-10', '2024-10-16', '2024-11-06'], maxLeaves: 26 }
 ];
 
-// Funkcja do dodania osób na urlopie w dniu dzisiejszym
+// Funkcja do dodawania urlopu
+function addLeave(personIndex, leaveDate) {
+    const person = people[personIndex];
+    if (!person.leaves.includes(leaveDate)) {
+        person.leaves.push(leaveDate);
+        displayPeople();
+        updateTodayLeaves();
+    }
+}
+
+// Funkcja do aktualizacji informacji o urlopie dzisiaj
 function updateTodayLeaves() {
-    const today = new Date().toISOString().split('T')[0]; // dzisiejsza data w formacie YYYY-MM-DD
+    const today = new Date().toISOString().split('T')[0];
     const todayLeaves = people
-        .filter(person => person.leaves.includes(today)) // osoby mające urlop dzisiaj
-        .map(person => person.name) // wyciągamy tylko imiona
-        .join(', '); // łączymy imiona przecinkiem
-    
+        .filter(person => person.leaves.includes(today))
+        .map(person => person.name)
+        .join(', ');
     const todayLeavesList = document.getElementById('todayLeavesList');
     if (todayLeaves) {
         todayLeavesList.textContent = todayLeaves + " są na urlopie dzisiaj.";
@@ -93,12 +105,12 @@ function updateTodayLeaves() {
     }
 }
 
-// Funkcja do wyświetlania tabeli z osobami i urlopami
+// Funkcja do wyświetlania tabeli
 function displayPeople() {
     const tableBody = document.getElementById('tableBody');
     tableBody.innerHTML = '';
 
-    people.forEach(person => {
+    people.forEach((person, index) => {
         const row = document.createElement('tr');
 
         const nameCell = document.createElement('td');
@@ -113,8 +125,14 @@ function displayPeople() {
         const addButton = document.createElement('button');
         addButton.textContent = 'Dodaj urlop';
         addButton.className = 'button';
-        addButton.addEventListener('click', () => alert(`Dodawanie urlopu dla ${person.name}`));
-        addButtonCell.appendChild(addButton);
+
+        // Kalendarz daty
+        const dateInput = document.createElement('input');
+        dateInput.type = 'date';
+        dateInput.addEventListener('change', (e) => {
+            addLeave(index, e.target.value);
+        });
+        addButtonCell.appendChild(dateInput);
         row.appendChild(addButtonCell);
 
         tableBody.appendChild(row);
