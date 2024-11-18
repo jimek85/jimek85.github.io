@@ -23,6 +23,13 @@
             border: none;
             cursor: pointer;
         }
+        .remove-button {
+            padding: 5px 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
         .today-leaves {
             margin-top: 20px;
             font-weight: bold;
@@ -79,12 +86,22 @@ const people = [
     { name: 'Kamil F', leaves: ['2024-05-02', '2024-06-03', '2024-06-04', '2024-06-05', '2024-06-06', '2024-06-07', '2024-06-10', '2024-06-11', '2024-06-12', '2024-06-13', '2024-08-19', '2024-10-11', '2024-11-05', '2025-01-02', '2025-01-03'], maxLeaves: 26 },
     { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-05-21', '2024-04-10', '2024-04-11', '2024-07-09', '2024-07-10', '2024-08-21', '2024-09-16', '2024-10-10', '2024-10-16', '2024-11-06'], maxLeaves: 26 }
 ];
-
 // Funkcja do dodawania urlopu
 function addLeave(personIndex, leaveDate) {
     const person = people[personIndex];
     if (!person.leaves.includes(leaveDate)) {
         person.leaves.push(leaveDate);
+        displayPeople();
+        updateTodayLeaves();
+    }
+}
+
+// Funkcja do usuwania urlopu
+function removeLeave(personIndex, leaveDate) {
+    const person = people[personIndex];
+    const index = person.leaves.indexOf(leaveDate);
+    if (index !== -1) {
+        person.leaves.splice(index, 1);
         displayPeople();
         updateTodayLeaves();
     }
@@ -121,6 +138,17 @@ function displayPeople() {
         leavesCell.textContent = person.leaves.join(', ');
         row.appendChild(leavesCell);
 
+        const removeButtonCell = document.createElement('td');
+        person.leaves.forEach((leaveDate) => {
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Usuń';
+            removeButton.className = 'remove-button';
+            removeButton.addEventListener('click', () => removeLeave(index, leaveDate));
+            removeButtonCell.appendChild(removeButton);
+        });
+        row.appendChild(removeButtonCell);
+
+        // Dodanie przycisku do dodawania urlopu
         const addButtonCell = document.createElement('td');
         const addButton = document.createElement('button');
         addButton.textContent = 'Dodaj urlop';
@@ -142,6 +170,7 @@ function displayPeople() {
 // Zaktualizuj na początku
 updateTodayLeaves();
 displayPeople();
+
 </script>
 
 </body>
