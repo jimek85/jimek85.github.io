@@ -3,70 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarządzanie Urlopami</title>
+    <title>Zarządzanie urlopami</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background-color: #f9f9f9;
-        }
-        h1 {
-            text-align: center;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
         }
         table, th, td {
-            border: 1px solid #ddd;
+            border: 1px solid black;
         }
         th, td {
             padding: 10px;
-            text-align: center;
-        }
-        th {
-            background-color: #f2f2f2;
+            text-align: left;
         }
         .button {
-            padding: 8px 16px;
+            padding: 5px 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
         }
-        .button:hover {
-            background-color: #45a049;
-        }
-        .input-date {
-            padding: 8px 10px;
-            font-size: 14px;
-        }
-        .leave-count {
+        .today-leaves {
+            margin-top: 20px;
             font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-<h1>Zarządzanie Urlopami</h1>
+<h1>Lista urlopów</h1>
+
+<!-- Sekcja wyświetlająca osoby na urlopie w dzisiejszym dniu -->
+<div class="today-leaves">
+    <p><strong>Osoby na urlopie dzisiaj:</strong></p>
+    <div id="todayLeavesList">Brak osób na urlopie dzisiaj.</div>
+</div>
 
 <table>
     <thead>
         <tr>
             <th>Osoba</th>
-            <th>Zaplanowane dni urlopu</th>
-            <th>Pozostałe dni urlopu</th>
+            <th>Daty urlopu</th>
+            <th>Pozostało dni urlopu</th>
             <th>Dodaj urlop</th>
         </tr>
     </thead>
-    <tbody id="table-body">
-        <!-- Lista osób i urlopów będzie generowana tutaj -->
+    <tbody id="tableBody">
+        <!-- Wiersze będą dodane przez JS -->
     </tbody>
 </table>
 
 <script>
-// Inicjalna lista osób z urlopami i ich dniami
+// Lista osób i ich urlopów (daty)
 const people = [
     { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17', '2024-04-22', '2024-04-23', '2024-05-02', '2024-05-29', '2024-07-01', '2024-07-02', '2024-07-03', '2024-07-04', '2024-07-05', '2024-08-29', '2024-08-30', '2024-09-05', '2024-10-10', '2024-10-23', '2024-10-28', '2024-11-08', '2024-11-12'], maxLeaves: 26 },
     { name: 'Artur', leaves: ['2024-04-22', '2024-05-06', '2024-07-22', '2024-08-26', '2024-09-18', '2024-10-01', '2024-10-18'], maxLeaves: 26 },
@@ -89,60 +77,53 @@ const people = [
     { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-05-21', '2024-04-10', '2024-04-11', '2024-07-09', '2024-07-10', '2024-08-21', '2024-09-16', '2024-10-10', '2024-10-16', '2024-11-06'], maxLeaves: 26 }
 ];
 
-// Funkcja do obliczania liczby dni urlopu
-function calculateLeaveCount(leaves) {
-    // Filtrujemy daty z adnotacją "z godzin" i konwertujemy je na unikalne dni
-    const validLeaves = leaves.filter(leave => !leave.includes("z godzin"));
-    const uniqueLeaves = [...new Set(validLeaves)]; // Unikalne dni
-    return uniqueLeaves.length;
+// Funkcja do dodania osób na urlopie w dniu dzisiejszym
+function updateTodayLeaves() {
+    const today = new Date().toISOString().split('T')[0]; // dzisiejsza data w formacie YYYY-MM-DD
+    const todayLeaves = people
+        .filter(person => person.leaves.includes(today)) // osoby mające urlop dzisiaj
+        .map(person => person.name) // wyciągamy tylko imiona
+        .join(', '); // łączymy imiona przecinkiem
+    
+    const todayLeavesList = document.getElementById('todayLeavesList');
+    if (todayLeaves) {
+        todayLeavesList.textContent = todayLeaves + " są na urlopie dzisiaj.";
+    } else {
+        todayLeavesList.textContent = "Brak osób na urlopie dzisiaj.";
+    }
 }
 
-// Funkcja generująca tabelę
-function generateTable() {
-    const tableBody = document.getElementById('table-body');
-    tableBody.innerHTML = ''; // Czyścimy tabelę przed ponownym renderowaniem
+// Funkcja do wyświetlania tabeli z osobami i urlopami
+function displayPeople() {
+    const tableBody = document.getElementById('tableBody');
+    tableBody.innerHTML = '';
 
     people.forEach(person => {
-        const leaveCount = calculateLeaveCount(person.leaves);
-        const remainingLeave = person.maxLeaves - leaveCount;
-
         const row = document.createElement('tr');
 
         const nameCell = document.createElement('td');
-        nameCell.textContent = `${person.name} (${remainingLeave} dni)`;
+        nameCell.textContent = `${person.name} (${person.maxLeaves - person.leaves.length})`;
+        row.appendChild(nameCell);
 
-        const leaveListCell = document.createElement('td');
-        leaveListCell.textContent = person.leaves.join(', ');
-
-        const remainingCell = document.createElement('td');
-        remainingCell.textContent = `${remainingLeave} dni`;
+        const leavesCell = document.createElement('td');
+        leavesCell.textContent = person.leaves.join(', ');
+        row.appendChild(leavesCell);
 
         const addButtonCell = document.createElement('td');
         const addButton = document.createElement('button');
         addButton.textContent = 'Dodaj urlop';
-        addButton.classList.add('button');
-        addButton.onclick = function() {
-            // Dodawanie nowego urlopu, w tym przypadku tylko pokazujemy datę, którą można wybrać
-            const newLeaveDate = prompt("Podaj datę urlopu (format: RRRR-MM-DD):");
-            if (newLeaveDate && !person.leaves.includes(newLeaveDate)) {
-                person.leaves.push(newLeaveDate);
-                generateTable(); // Przerysowujemy tabelę
-            }
-        };
-
+        addButton.className = 'button';
+        addButton.addEventListener('click', () => alert(`Dodawanie urlopu dla ${person.name}`));
         addButtonCell.appendChild(addButton);
-
-        row.appendChild(nameCell);
-        row.appendChild(leaveListCell);
-        row.appendChild(remainingCell);
         row.appendChild(addButtonCell);
 
         tableBody.appendChild(row);
     });
 }
 
-// Na początek generujemy tabelę
-generateTable();
+// Zaktualizuj na początku
+updateTodayLeaves();
+displayPeople();
 </script>
 
 </body>
