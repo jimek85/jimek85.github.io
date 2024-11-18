@@ -7,17 +7,35 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            margin: 20px;
         }
-        .vacation-list, .all-employees-list {
-            margin-top: 20px;
+
+        h1 {
+            text-align: center;
         }
-        .vacation-item, .employee-item {
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .list {
+            width: 48%;
+        }
+
+        .list ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .list li {
             margin: 10px 0;
             padding: 10px;
             border: 1px solid #ddd;
             border-radius: 5px;
         }
-        .vacation-item button, .employee-item button {
+
+        .btn {
             background-color: #f44336;
             color: white;
             border: none;
@@ -25,121 +43,149 @@
             cursor: pointer;
             border-radius: 3px;
         }
-        .vacation-item button:hover, .employee-item button:hover {
+
+        .btn:hover {
             background-color: #d32f2f;
         }
-        .remaining-days {
+
+        .vacation-day {
+            color: green;
             font-weight: bold;
+        }
+
+        .vacation-list {
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Na urlopie w nadchodzących dniach:</h1>
-    <div class="vacation-list" id="vacationList"></div>
 
-    <h1>Lista wszystkich pracowników:</h1>
-    <div class="all-employees-list" id="employeeList"></div>
+    <h1>Plan Urlopów</h1>
+
+    <div class="container">
+        <!-- Lista pracowników -->
+        <div class="list" id="employeeList">
+            <h2>Wszyscy Pracownicy</h2>
+            <ul></ul>
+        </div>
+
+        <!-- Lista nadchodzących urlopów -->
+        <div class="list" id="vacationList">
+            <h2>Urlopy w nadchodzących dniach</h2>
+            <ul></ul>
+        </div>
+    </div>
 
     <script>
-        // Obiekt z danymi urlopów
+        // Dane początkowe
         const vacationData = {
             "Paweł": {
-                remaining: 7, 
-                daysOff: ["19.11.2024", "20.11.2024", "21.11.2024"]
+                remainingDays: 7,
+                vacationDays: ["19.11.2024", "20.11.2024", "21.11.2024"]
             },
             "Artur": {
-                remaining: 19,
-                daysOff: ["22.11.2024", "23.11.2024", "25.11.2024"]
+                remainingDays: 19,
+                vacationDays: ["22.11.2024", "23.11.2024", "25.11.2024"]
             },
             "Ewa": {
-                remaining: 4,
-                daysOff: ["25.11.2024", "26.11.2024"]
+                remainingDays: 4,
+                vacationDays: ["25.11.2024", "26.11.2024"]
             },
             "Radosław": {
-                remaining: 10,
-                daysOff: ["25.11.2024", "26.11.2024"]
+                remainingDays: 10,
+                vacationDays: ["25.11.2024", "26.11.2024"]
             },
             "Paulina": {
-                remaining: 10,
-                daysOff: ["19.11.2024", "21.11.2024"]
+                remainingDays: 10,
+                vacationDays: ["19.11.2024", "21.11.2024"]
             },
-            // Dodaj resztę osób
+            "Monika": {
+                remainingDays: 4,
+                vacationDays: ["19.11.2024", "20.11.2024"]
+            },
+            "Michał": {
+                remainingDays: 4,
+                vacationDays: ["19.11.2024"]
+            },
+            // Dodaj resztę danych pracowników
         };
 
-        // Funkcja renderująca listę osób z pozostałymi dniami urlopu
+        // Funkcja renderująca listę pracowników z pozostałymi dniami urlopu
         function renderEmployeeList() {
-            const employeeList = document.getElementById('employeeList');
-            employeeList.innerHTML = ''; // Wyczyść poprzednią listę
+            const employeeList = document.getElementById("employeeList").querySelector("ul");
+            employeeList.innerHTML = ""; // Resetowanie listy
 
+            // Iterujemy przez wszystkich pracowników
             for (let name in vacationData) {
-                const employeeData = vacationData[name];
+                const data = vacationData[name];
+                const li = document.createElement("li");
 
-                const employeeDiv = document.createElement('div');
-                employeeDiv.classList.add('employee-item');
-                employeeDiv.innerHTML = `
-                    <strong>${name}</strong> - Pozostało dni urlopu: <span class="remaining-days">${employeeData.remaining}</span>
-                    <button onclick="addVacationDay('${name}')">Dodaj urlop</button>
+                li.innerHTML = `
+                    <strong>${name}</strong> - Pozostało dni urlopu: ${data.remainingDays}
+                    <button class="btn" onclick="addVacation('${name}')">Dodaj urlop</button>
                 `;
-                employeeList.appendChild(employeeDiv);
+                employeeList.appendChild(li);
             }
         }
 
-        // Funkcja renderująca listę osób na urlopie w nadchodzących dniach
+        // Funkcja renderująca listę nadchodzących urlopów
         function renderVacationList() {
-            const vacationList = document.getElementById('vacationList');
-            vacationList.innerHTML = ''; // Wyczyść poprzednią listę
+            const vacationList = document.getElementById("vacationList").querySelector("ul");
+            vacationList.innerHTML = ""; // Resetowanie listy
 
-            // Iteruj przez obiekt vacationData
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Ustawiamy dzisiejszą datę na 00:00:00
+
+            // Iterujemy przez pracowników i ich dni urlopu
             for (let name in vacationData) {
-                const personData = vacationData[name];
+                const data = vacationData[name];
+                const futureDays = data.vacationDays.filter(day => {
+                    const vacationDate = new Date(day);
+                    return vacationDate >= today; // Tylko dni przyszłe
+                });
 
-                // Filtruj urlopy, które są w przyszłości (od dzisiaj)
-                const upcomingDaysOff = personData.daysOff.filter(date => new Date(date) >= new Date());
-
-                if (upcomingDaysOff.length > 0) {
-                    const personDiv = document.createElement('div');
-                    personDiv.classList.add('vacation-item');
-
-                    // Wstawiamy dane do HTML
-                    personDiv.innerHTML = `
-                        <strong>${name}</strong> - ${upcomingDaysOff.join(', ')} (${personData.remaining} dni urlopu)
-                        <button onclick="removeDay('${name}', '${upcomingDaysOff[0]}')">Usuń ${upcomingDaysOff[0]}</button>
+                if (futureDays.length > 0) {
+                    const li = document.createElement("li");
+                    li.innerHTML = `
+                        <strong>${name}</strong> - ${futureDays.join(", ")}
+                        <button class="btn" onclick="removeVacation('${name}', '${futureDays[0]}')">Usuń</button>
                     `;
-                    vacationList.appendChild(personDiv);
+                    vacationList.appendChild(li);
                 }
             }
         }
 
         // Funkcja dodająca dzień urlopu
-        function addVacationDay(name) {
-            const personData = vacationData[name];
-            if (personData.remaining > 0) {
+        function addVacation(name) {
+            const data = vacationData[name];
+            if (data.remainingDays > 0) {
                 const today = new Date().toLocaleDateString();
-                // Dodaj dzień urlopu
-                personData.daysOff.push(today);
-                personData.remaining--; // Zmniejsz liczbę pozostałych dni urlopu
-                renderVacationList();
+                // Dodajemy dzisiejszą datę do urlopu
+                data.vacationDays.push(today);
+                data.remainingDays--; // Zmniejszamy liczbę pozostałych dni
+                renderVacationList(); // Aktualizujemy widok urlopów
+                renderEmployeeList(); // Aktualizujemy widok pracowników
             } else {
-                alert("Brak dni urlopu!");
+                alert(`${name} nie ma już dni urlopowych.`);
             }
         }
 
         // Funkcja usuwająca dzień urlopu
-        function removeDay(name, day) {
-            const personData = vacationData[name];
-            // Usuń dzień urlopu z listy
-            const index = personData.daysOff.indexOf(day);
+        function removeVacation(name, day) {
+            const data = vacationData[name];
+            const index = data.vacationDays.indexOf(day);
             if (index > -1) {
-                personData.daysOff.splice(index, 1);
-                personData.remaining++; // Zwiększ liczbę pozostałych dni urlopu
-                renderVacationList();
+                data.vacationDays.splice(index, 1);
+                data.remainingDays++; // Zwiększamy liczbę pozostałych dni
+                renderVacationList(); // Aktualizujemy widok urlopów
+                renderEmployeeList(); // Aktualizujemy widok pracowników
             }
         }
 
-        // Renderowanie listy po załadowaniu strony
+        // Wywołanie funkcji renderujących po załadowaniu strony
         window.onload = function() {
-            renderVacationList();
             renderEmployeeList();
+            renderVacationList();
         };
     </script>
 </body>
