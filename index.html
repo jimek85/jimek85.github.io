@@ -1,197 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista leków</title>
-    <style>
-        .taken {
-            text-decoration: line-through; /* Stylizacja dla skreślonych nazw leków */
-        }
-        /* Dodatkowe style dla kolorowych nazw leków */
-        .medName {
-            font-weight: bold;
-            cursor: pointer; /* Kursor zmienia się na wskaźnik po najechaniu */
-        }
-        .Lacidofil { color: #1abc9c; }
-        .Octeangín { color: #3498db; }
-        .Glimbax { color: #9b59b6; }
-        .Corsodyl { color: #e67e22; }
-        .Nystatyna-zawiesina { color: #f1c40f; }
-        .Nystatyna-dojelitowo { color: #2ecc71; }
-        .Amotaks { color: #e74c3c; }
-
-        /* Stylizacja ikony X */
-        .checkmark {
-            position: relative;
-            display: inline-block;
-            width: 16px;
-            height: 16px;
-            background-color: #ccc;
-            border-radius: 50%;
-            vertical-align: middle;
-            margin-right: 8px;
-            cursor: pointer;
-            text-align: center;
-            line-height: 16px;
-            font-size: 12px;
-            color: white;
-        }
-        .checkmark.checked {
-            background-color: red;
-        }
-        .checkmark.checked::before {
-            content: 'X';
-        }
-        .time-taken {
-            font-size: 0.8em;
-            color: #888;
-            margin-left: 8px;
-        }
-    </style>
+    <title>Zarządzanie Urlopami</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <table id="medsTable">
-        <thead>
-            <tr>
-                <th>Data</th>
-                <th>Godzina</th>
-                <th>Nazwa leku</th>
-                <th>Zaznacz</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Tabela zostanie wygenerowana dynamicznie za pomocą JavaScript -->
-        </tbody>
-    </table>
 
-    <script>
-        // Funkcja zwracająca formatowaną bieżącą datę (dd.mm)
-        function getFormattedDate() {
-            const today = new Date();
-            const day = String(today.getDate()).padStart(2, '0');
-            const month = String(today.getMonth() + 1).padStart(2, '0'); // Miesiące są indeksowane od 0
-            return `${day}.${month}`;
-        }
+    <header>
+        <h1>System Zarządzania Urlopami</h1>
+    </header>
 
-        // Funkcja zwracająca formatowaną bieżącą godzinę (hh:mm)
-        function getFormattedTime() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            return `${hours}:${minutes}`;
-        }
+    <section id="urlop-form">
+        <h2>Dodaj Nowy Urlop</h2>
+        <form id="add-leave-form">
+            <label for="name">Imię:</label>
+            <input type="text" id="name" required>
 
-        // Funkcja generująca dane leków na podstawie bieżącej daty
-        function getMedsData() {
-            let savedData = localStorage.getItem('medsData');
-            let savedMedsData = [];
-            if (savedData) {
-                savedMedsData = JSON.parse(savedData);
-            }
+            <label for="dates">Daty Urlopu (np. 20.12-25.12):</label>
+            <input type="text" id="dates" required>
 
-            const currentDate = getFormattedDate();
+            <button type="submit">Dodaj Urlop</button>
+        </form>
+    </section>
 
-            if (savedMedsData.length > 0 && savedMedsData[0].date === currentDate) {
-                return savedMedsData;
-            } else {
-                const medsData = [
-                    { date: currentDate, time: '8:00', med: 'Lacidofil' },
-                    { date: currentDate, time: '8:00', med: 'Octeangín' },
-                    { date: currentDate, time: '8:15', med: 'Glimbax' },
-                    { date: currentDate, time: '8:30', med: 'Corsodyl' },
-                    { date: currentDate, time: '8:45', med: 'Nystatyna zawiesina' },
-                    { date: currentDate, time: '8:45', med: 'Nystatyna dojelitowo' },
-                    { date: currentDate, time: '11:00', med: 'Amotaks' },
-                    { date: currentDate, time: '14:00', med: 'Nystatyna zawiesina' },
-                    { date: currentDate, time: '16:00', med: 'Octeangín' },
-                    { date: currentDate, time: '16:30', med: 'Nystatyna dojelitowo' },
-                    { date: currentDate, time: '17:30', med: 'Lacidofil' },
-                    { date: currentDate, time: '18:00', med: 'Glimbax' },
-                    { date: currentDate, time: '18:30', med: 'Corsodyl' },
-                    { date: currentDate, time: '19:00', med: 'Amotaks' },
-                    { date: currentDate, time: '19:30', med: 'Nystatyna zawiesina' },
-                    { date: currentDate, time: '19:30', med: 'Nystatyna dojelitowo' },
-                    { date: currentDate, time: '20:30', med: 'Lacidofil' },
-                    { date: currentDate, time: '21:30', med: 'Nystatyna zawiesina' },
-                    { date: currentDate, time: '22:30', med: 'Octeangín' },
-                    { date: currentDate, time: '23:00', med: 'Corsodyl' },
-                    { date: currentDate, time: '23:30', med: 'Nystatyna dojelitowo' },
-                    { date: currentDate, time: '3:00', med: 'Amotaks' }
-                ];
+    <section id="urlop-list">
+        <h2>Lista Urlopów</h2>
+        <input type="date" id="filter-date" placeholder="Wyszukaj po dacie">
+        <ul id="leave-list"></ul>
+    </section>
 
-                localStorage.setItem('medsData', JSON.stringify(medsData));
-
-                return medsData;
-            }
-        }
-
-        let medsData = getMedsData();
-
-        function createTable() {
-            const tableBody = document.querySelector('#medsTable tbody');
-            medsData.forEach((entry, index) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${entry.date}</td>
-                    <td>${entry.time}</td>
-                    <td id="medName-${index}" class="medName ${entry.taken ? 'taken' : ''} ${entry.med.replace(/\s+/g, '-')}">${entry.med}</td>
-                    <td>
-                        <span id="check-${index}" class="checkmark ${entry.taken ? 'checked' : ''}" onclick="markAsTaken(${index})"></span>
-                        <span id="time-taken-${index}" class="time-taken">${entry.timeTaken || ''}</span>
-                    </td>
-                `;
-                tableBody.appendChild(row);
-
-                document.getElementById(`medName-${index}`).addEventListener('click', () => markAsTaken(index));
-            });
-
-            loadProgress();
-        }
-
-        function markAsTaken(index) {
-            const checkBox = document.getElementById(`check-${index}`);
-            const medName = document.getElementById(`medName-${index}`);
-            const timeTaken = document.getElementById(`time-taken-${index}`);
-            
-            if (!medsData[index].taken) {
-                medsData[index].taken = true;
-                medsData[index].timeTaken = getFormattedTime();
-                checkBox.classList.add('checked');
-                medName.classList.add('taken');
-                timeTaken.textContent = medsData[index].timeTaken;
-            } else {
-                medsData[index].taken = false;
-                medsData[index].timeTaken = '';
-                checkBox.classList.remove('checked');
-                medName.classList.remove('taken');
-                timeTaken.textContent = '';
-            }
-
-            saveProgress();
-        }
-
-        function saveProgress() {
-            localStorage.setItem('medsData', JSON.stringify(medsData));
-        }
-
-        function loadProgress() {
-            const savedData = localStorage.getItem('medsData');
-            if (savedData) {
-                const savedMedsData = JSON.parse(savedData);
-                savedMedsData.forEach((entry, index) => {
-                    medsData[index].taken = entry.taken;
-                    medsData[index].timeTaken = entry.timeTaken;
-                    if (entry.taken) {
-                        document.getElementById(`check-${index}`).classList.add('checked');
-                        document.getElementById(`medName-${index}`).classList.add('taken');
-                        document.getElementById(`time-taken-${index}`).textContent = entry.timeTaken;
-                    }
-                });
-            }
-        }
-
-        window.onload = createTable;
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
