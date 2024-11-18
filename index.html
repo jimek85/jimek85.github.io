@@ -68,90 +68,71 @@
 <script>
 // Inicjalna lista osób z urlopami i ich dniami
 const people = [
-    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17', '2024-04-22'], maxLeaves: 26 },
-    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06'], maxLeaves: 26 },
-    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16', '2024-05-20'], maxLeaves: 26 },
-    { name: 'Radosław', leaves: ['2024-05-16', '2024-06-10'], maxLeaves: 26 },
-    { name: 'Paulina', leaves: ['2024-03-12', '2024-05-22'], maxLeaves: 26 },
-    { name: 'Monika', leaves: ['2024-02-01', '2024-03-14'], maxLeaves: 26 },
-    { name: 'Michał', leaves: ['2024-04-24', '2024-06-11'], maxLeaves: 26 },
-    { name: 'Dariusz', leaves: ['2024-04-19', '2024-05-23'], maxLeaves: 26 },
-    { name: 'Kamil P', leaves: ['2024-03-26', '2024-04-26'], maxLeaves: 26 },
-    { name: 'Marcin S', leaves: ['2024-04-17', '2024-05-13'], maxLeaves: 26 },
-    { name: 'Daniel', leaves: ['2024-02-20', '2024-05-02'], maxLeaves: 26 },
-    { name: 'Agnieszka', leaves: ['2024-03-29', '2024-04-12'], maxLeaves: 26 },
-    { name: 'Karolina', leaves: ['2024-04-15', '2024-05-02'], maxLeaves: 26 },
-    { name: 'Kamil S', leaves: ['2024-05-10', '2024-06-31'], maxLeaves: 26 },
+    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17', '2024-04-22', '2024-04-23', '2024-05-02', '2024-05-29', '2024-07-01', '2024-07-02', '2024-07-03', '2024-07-04', '2024-07-05', '2024-08-29', '2024-08-30', '2024-09-05', '2024-10-10', '2024-10-23', '2024-10-28', '2024-11-08', '2024-11-12'], maxLeaves: 26 },
+    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06', '2024-07-22', '2024-08-26', '2024-09-18', '2024-10-01', '2024-10-18'], maxLeaves: 26 },
+    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16', '2024-04-24', '2024-04-25', '2024-05-20', '2024-05-28', '2024-05-29', '2024-05-31', '2024-06-20', '2024-07-08', '2024-07-09', '2024-07-10', '2024-07-11', '2024-07-12', '2024-08-08', '2024-08-16', '2024-08-29', '2024-08-30', '2024-09-02', '2024-09-03', '2024-10-16', '2024-10-17', '2024-10-18', '2024-10-28'], maxLeaves: 26 },
+    { name: 'Radosław', leaves: ['2024-05-16', '2024-05-20', '2024-06-10', '2024-06-17', '2024-07-22', '2024-07-23', '2024-07-24', '2024-07-25', '2024-07-26', '2024-07-29', '2024-08-16', '2024-09-09', '2024-09-10', '2024-10-11', '2024-10-22', '2024-11-25'], maxLeaves: 26 },
+    { name: 'Paulina', leaves: ['2024-03-12', '2024-03-13', '2024-03-26', '2024-04-15', '2024-05-09', '2024-05-22', '2024-05-31', '2024-06-06', '2024-06-12', '2024-06-25', '2024-07-26', '2024-09-05', '2024-09-09', '2024-09-17', '2024-09-23', '2024-10-03', '2024-10-04', '2024-10-08'], maxLeaves: 26 },
+    { name: 'Monika', leaves: ['2024-02-01', '2024-02-02', '2024-02-05', '2024-03-14', '2024-03-29', '2024-04-22', '2024-05-02', '2024-05-10', '2024-05-13', '2024-05-31', '2024-07-11', '2024-08-05', '2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-08-12', '2024-08-13', '2024-08-14', '2024-08-16', '2024-09-10', '2024-10-04', '2024-10-31', '2024-11-06'], maxLeaves: 26 },
+    { name: 'Michał', leaves: ['2024-04-24', '2024-04-25', '2024-04-26', '2024-05-31', '2024-06-11', '2024-06-25', '2024-07-15', '2024-07-16', '2024-07-17', '2024-07-29', '2024-07-30', '2024-07-31', '2024-08-01', '2024-08-02', '2024-08-05', '2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-09-17', '2024-09-25', '2024-11-19'], maxLeaves: 26 },
+    { name: 'Ewa', leaves: ['2024-10-11', '2024-10-18', '2024-10-25', '2024-11-08', '2024-11-12', '2024-11-13', '2024-11-14', '2024-11-15', '2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 26 },
+    // Dodaj więcej osób, jak chcesz
 ];
 
 // Funkcja do obliczania liczby dni urlopu
 function calculateLeaveCount(leaves) {
-    const uniqueLeaves = [...new Set(leaves)]; // Unikalne dni
+    // Filtrujemy daty z adnotacją "z godzin" i konwertujemy je na unikalne dni
+    const validLeaves = leaves.filter(leave => !leave.includes("z godzin"));
+    const uniqueLeaves = [...new Set(validLeaves)]; // Unikalne dni
     return uniqueLeaves.length;
 }
 
 // Funkcja generująca tabelę
 function generateTable() {
     const tableBody = document.getElementById('table-body');
-    tableBody.innerHTML = ''; // Czyści istniejący wiersz
+    tableBody.innerHTML = ''; // Czyścimy tabelę przed ponownym renderowaniem
 
     people.forEach(person => {
+        const leaveCount = calculateLeaveCount(person.leaves);
+        const remainingLeave = person.maxLeaves - leaveCount;
+
         const row = document.createElement('tr');
 
-        // Komórka z imieniem
         const nameCell = document.createElement('td');
-        nameCell.textContent = `${person.name} (${person.maxLeaves} dni)`;
-        row.appendChild(nameCell);
+        nameCell.textContent = `${person.name} (${remainingLeave} dni)`;
 
-        // Komórka z urlopami
-        const leavesCell = document.createElement('td');
-        leavesCell.textContent = person.leaves.length > 0 ? person.leaves.join(', ') : 'Brak urlopów';
-        row.appendChild(leavesCell);
+        const leaveListCell = document.createElement('td');
+        leaveListCell.textContent = person.leaves.join(', ');
 
-        // Komórka z pozostałymi dniami urlopu
-        const remainingDaysCell = document.createElement('td');
-        const usedLeaves = calculateLeaveCount(person.leaves);
-        const remainingDays = person.maxLeaves - usedLeaves;
-        remainingDaysCell.textContent = `${remainingDays} dni`;
-        remainingDaysCell.classList.add('leave-count');
-        row.appendChild(remainingDaysCell);
+        const remainingCell = document.createElement('td');
+        remainingCell.textContent = `${remainingLeave} dni`;
 
-        // Komórka z przyciskiem do dodania urlopu
-        const buttonCell = document.createElement('td');
+        const addButtonCell = document.createElement('td');
         const addButton = document.createElement('button');
-        addButton.classList.add('button');
         addButton.textContent = 'Dodaj urlop';
-        addButton.onclick = () => addLeave(person);
-        buttonCell.appendChild(addButton);
-        row.appendChild(buttonCell);
+        addButton.classList.add('button');
+        addButton.onclick = function() {
+            // Dodawanie nowego urlopu, w tym przypadku tylko pokazujemy datę, którą można wybrać
+            const newLeaveDate = prompt("Podaj datę urlopu (format: RRRR-MM-DD):");
+            if (newLeaveDate && !person.leaves.includes(newLeaveDate)) {
+                person.leaves.push(newLeaveDate);
+                generateTable(); // Przerysowujemy tabelę
+            }
+        };
+
+        addButtonCell.appendChild(addButton);
+
+        row.appendChild(nameCell);
+        row.appendChild(leaveListCell);
+        row.appendChild(remainingCell);
+        row.appendChild(addButtonCell);
 
         tableBody.appendChild(row);
     });
 }
 
-// Funkcja do dodania urlopu
-function addLeave(person) {
-    const leaveDate = prompt('Podaj datę urlopu (format: YYYY-MM-DD):');
-
-    if (leaveDate && isValidDate(leaveDate)) {
-        // Dodajemy urlop do osoby
-        person.leaves.push(leaveDate);
-        // Odświeżamy tabelę
-        generateTable();
-    } else {
-        alert('Proszę podać poprawną datę!');
-    }
-}
-
-// Funkcja do sprawdzania poprawności daty
-function isValidDate(date) {
-    const regex = /^\d{4}-\d{2}-\d{2}$/;
-    return regex.test(date);
-}
-
-// Inicjalizacja tabeli po załadowaniu strony
+// Na początek generujemy tabelę
 generateTable();
-
 </script>
 
 </body>
