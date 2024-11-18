@@ -1,41 +1,140 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Urlopowy</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Zarządzania Urlopami</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1 {
+            text-align: center;
+        }
+        .form-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        input, button {
+            padding: 8px 12px;
+            margin: 5px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .leave-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+        .leave-item {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .full {
+            background-color: #f44336;
+            color: white;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>System Zarządzania Urlopami</h1>
-    <p>Lista urlopów pracowników</p>
-  </header>
 
-  <main>
-    <div class="container">
-      <h2>Dodaj nowy urlop</h2>
-      <form id="leaveForm">
-        <label for="name">Imię i nazwisko:</label>
-        <input type="text" id="name" required>
+<h1>System Zarządzania Urlopami</h1>
 
-        <label for="date">Data urlopu:</label>
-        <input type="date" id="date" required>
+<div class="form-container">
+    <label for="name">Imię:</label>
+    <input type="text" id="name" placeholder="Imię" required>
+    
+    <label for="date">Data urlopu:</label>
+    <input type="date" id="date" required>
+    
+    <button onclick="addLeave()">Dodaj urlop</button>
+</div>
 
-        <button type="submit">Dodaj urlop</button>
-      </form>
+<div class="leave-list" id="leave-list">
+    <!-- Lista urlopów będzie wyświetlana tutaj -->
+</div>
 
-      <h2>Lista zapisanych urlopów</h2>
-      <div id="leaveList">
-        <!-- Lista urlopów będzie się wyświetlać tutaj -->
-      </div>
-    </div>
-  </main>
+<script>
+// Inicjalna lista urlopów (możesz ją rozbudować w kodzie)
+const leaveList = [
+    { name: 'Paweł', date: '2024-03-22' },
+    { name: 'Artur', date: '2024-04-22' },
+    { name: 'Ewa K', date: '2024-03-28' },
+    { name: 'Radosław', date: '2024-05-16' },
+    { name: 'Paulina', date: '2024-03-12' },
+    // Dodaj pozostałe dane urlopowe...
+];
 
-  <footer>
-    <p>&copy; 2024 - System Urlopowy</p>
-  </footer>
+// Funkcja do dodawania nowego urlopu
+function addLeave() {
+    const name = document.getElementById('name').value.trim();
+    const date = document.getElementById('date').value;
 
-  <script src="script.js"></script>
+    if (!name || !date) {
+        alert('Proszę podać imię i datę!');
+        return;
+    }
+
+    // Dodajemy nowy urlop do listy
+    leaveList.push({ name, date });
+
+    // Zresetuj pola formularza
+    document.getElementById('name').value = '';
+    document.getElementById('date').value = '';
+
+    // Zaktualizuj widok listy urlopów
+    updateLeaveList();
+}
+
+// Funkcja do zaktualizowania widoku urlopów
+function updateLeaveList() {
+    const leaveListContainer = document.getElementById('leave-list');
+    leaveListContainer.innerHTML = '';  // Czyści listę
+
+    // Grupowanie osób według daty
+    const groupedByDate = leaveList.reduce((acc, { name, date }) => {
+        if (!acc[date]) acc[date] = [];
+        acc[date].push(name);
+        return acc;
+    }, {});
+
+    // Wyświetlanie listy urlopów
+    for (const date in groupedByDate) {
+        const names = groupedByDate[date];
+        const leaveItem = document.createElement('div');
+        leaveItem.classList.add('leave-item');
+        
+        // Jeśli liczba osób to 3 lub więcej, oznaczamy jako pełny urlop
+        if (names.length >= 3) {
+            leaveItem.classList.add('full');
+        }
+
+        leaveItem.innerHTML = `
+            <strong>Data:</strong> ${date}<br>
+            <strong>Liczba osób:</strong> ${names.length} <br>
+            <strong>Osoby:</strong> ${names.join(', ')}
+        `;
+
+        leaveListContainer.appendChild(leaveItem);
+    }
+}
+
+// Inicjalizujemy widok listy urlopów po załadowaniu strony
+updateLeaveList();
+</script>
+
 </body>
 </html>
