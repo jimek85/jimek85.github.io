@@ -37,15 +37,30 @@
             font-weight: bold;
             color: green;
         }
+        .leave-list {
+            display: flex;
+            flex-direction: column;
+        }
+        .leave-item {
+            margin-bottom: 5px;
+        }
+        .remove-btn {
+            margin-left: 10px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
 
     <h1>Zarządzanie Urlopami</h1>
 
-    <p>Wybierz datę, aby sprawdzić kto jest na urlopie:</p>
-    <input type="date" id="checkDate" class="input-date">
-    <button onclick="checkWhoIsOnLeave()">Sprawdź, kto jest na urlopie</button>
+    <!-- Sekcja na górze: Kto jest na urlopie na 3 dni do przodu -->
+    <h3>Na urlopie w najbliższych 3 dniach:</h3>
+    <div id="upcomingLeave"></div>
 
     <h2>Pracownicy i ich urlopy:</h2>
 
@@ -59,118 +74,113 @@
             </tr>
         </thead>
         <tbody>
+            <!-- Lista pracowników -->
             <tr data-person="Paweł">
                 <td>Paweł</td>
-                <td id="leaveList-Paweł"></td>
+                <td id="leaveList-Paweł" class="leave-list"></td>
                 <td id="remaining-Paweł" class="remaining-days">7</td>
                 <td><button onclick="addLeave('Paweł')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Artur">
                 <td>Artur</td>
-                <td id="leaveList-Artur"></td>
+                <td id="leaveList-Artur" class="leave-list"></td>
                 <td id="remaining-Artur" class="remaining-days">19</td>
                 <td><button onclick="addLeave('Artur')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Ewa">
                 <td>Ewa</td>
-                <td id="leaveList-Ewa"></td>
+                <td id="leaveList-Ewa" class="leave-list"></td>
                 <td id="remaining-Ewa" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Ewa')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Radosław">
                 <td>Radosław</td>
-                <td id="leaveList-Radosław"></td>
+                <td id="leaveList-Radosław" class="leave-list"></td>
                 <td id="remaining-Radosław" class="remaining-days">10</td>
                 <td><button onclick="addLeave('Radosław')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Paulina">
                 <td>Paulina</td>
-                <td id="leaveList-Paulina"></td>
+                <td id="leaveList-Paulina" class="leave-list"></td>
                 <td id="remaining-Paulina" class="remaining-days">10</td>
                 <td><button onclick="addLeave('Paulina')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Monika">
                 <td>Monika</td>
-                <td id="leaveList-Monika"></td>
+                <td id="leaveList-Monika" class="leave-list"></td>
                 <td id="remaining-Monika" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Monika')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Michał">
                 <td>Michał</td>
-                <td id="leaveList-Michał"></td>
+                <td id="leaveList-Michał" class="leave-list"></td>
                 <td id="remaining-Michał" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Michał')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Ewa B">
                 <td>Ewa B</td>
-                <td id="leaveList-Ewa B"></td>
+                <td id="leaveList-Ewa B" class="leave-list"></td>
                 <td id="remaining-Ewa B" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Ewa B')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Dariusz">
                 <td>Dariusz</td>
-                <td id="leaveList-Dariusz"></td>
+                <td id="leaveList-Dariusz" class="leave-list"></td>
                 <td id="remaining-Dariusz" class="remaining-days">8</td>
                 <td><button onclick="addLeave('Dariusz')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Kamil P">
                 <td>Kamil P</td>
-                <td id="leaveList-Kamil P"></td>
+                <td id="leaveList-Kamil P" class="leave-list"></td>
                 <td id="remaining-Kamil P" class="remaining-days">10</td>
                 <td><button onclick="addLeave('Kamil P')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Marcin S">
                 <td>Marcin S</td>
-                <td id="leaveList-Marcin S"></td>
+                <td id="leaveList-Marcin S" class="leave-list"></td>
                 <td id="remaining-Marcin S" class="remaining-days">10</td>
                 <td><button onclick="addLeave('Marcin S')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Daniel">
                 <td>Daniel</td>
-                <td id="leaveList-Daniel"></td>
+                <td id="leaveList-Daniel" class="leave-list"></td>
                 <td id="remaining-Daniel" class="remaining-days">6</td>
                 <td><button onclick="addLeave('Daniel')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Marcin W">
                 <td>Marcin W</td>
-                <td id="leaveList-Marcin W"></td>
+                <td id="leaveList-Marcin W" class="leave-list"></td>
                 <td id="remaining-Marcin W" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Marcin W')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Agnieszka">
                 <td>Agnieszka</td>
-                <td id="leaveList-Agnieszka"></td>
+                <td id="leaveList-Agnieszka" class="leave-list"></td>
                 <td id="remaining-Agnieszka" class="remaining-days">2</td>
                 <td><button onclick="addLeave('Agnieszka')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Karolina">
                 <td>Karolina</td>
-                <td id="leaveList-Karolina"></td>
+                <td id="leaveList-Karolina" class="leave-list"></td>
                 <td id="remaining-Karolina" class="remaining-days">6</td>
                 <td><button onclick="addLeave('Karolina')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Kamil S">
                 <td>Kamil S</td>
-                <td id="leaveList-Kamil S"></td>
+                <td id="leaveList-Kamil S" class="leave-list"></td>
                 <td id="remaining-Kamil S" class="remaining-days">6</td>
                 <td><button onclick="addLeave('Kamil S')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Sebastian">
                 <td>Sebastian</td>
-                <td id="leaveList-Sebastian"></td>
+                <td id="leaveList-Sebastian" class="leave-list"></td>
                 <td id="remaining-Sebastian" class="remaining-days">8</td>
                 <td><button onclick="addLeave('Sebastian')">Dodaj urlop</button></td>
             </tr>
         </tbody>
     </table>
 
-    <div id="leaveResult" class="highlight" style="display:none;">
-        <h3>Na urlopie w wybranym dniu:</h3>
-        <ul id="onLeaveList"></ul>
-    </div>
-
     <script>
-        // Dane pracowników i ich urlopy (maksymalna liczba dni urlopu = 26)
         const leaveData = {
             "Paweł": { urlopy: [], dniUrlopu: 7 },
             "Artur": { urlopy: [], dniUrlopu: 19 },
@@ -201,11 +211,24 @@
             }
         }
 
+        function removeLeave(person, date) {
+            const index = leaveData[person].urlopy.indexOf(date);
+            if (index !== -1) {
+                leaveData[person].urlopy.splice(index, 1);
+                updateTable();
+            }
+        }
+
         function updateTable() {
-            // Zaktualizowanie tabeli po dodaniu urlopu
             Object.keys(leaveData).forEach(person => {
                 const leaveList = document.getElementById(`leaveList-${person}`);
-                leaveList.textContent = leaveData[person].urlopy.join(", ");
+                leaveList.innerHTML = "";
+                leaveData[person].urlopy.forEach(date => {
+                    const leaveItem = document.createElement("div");
+                    leaveItem.classList.add("leave-item");
+                    leaveItem.innerHTML = `${date} <button class="remove-btn" onclick="removeLeave('${person}', '${date}')">Usuń</button>`;
+                    leaveList.appendChild(leaveItem);
+                });
                 
                 // Obliczanie pozostałych dni urlopu
                 const remainingDays = 26 - leaveData[person].urlopy.length;
@@ -213,26 +236,34 @@
             });
         }
 
-        function checkWhoIsOnLeave() {
-            const checkDate = document.getElementById("checkDate").value;
-            if (!checkDate) return;
+        function showUpcomingLeaves() {
+            const upcomingLeave = document.getElementById("upcomingLeave");
+            upcomingLeave.innerHTML = ""; // Clear previous data
 
-            const onLeaveList = document.getElementById("onLeaveList");
-            onLeaveList.innerHTML = "";
+            const today = new Date();
+            for (let i = 0; i < 3; i++) {
+                const checkDate = new Date(today);
+                checkDate.setDate(today.getDate() + i);
+                const formattedDate = checkDate.toISOString().split("T")[0];
 
-            // Sprawdź, kto jest na urlopie w danym dniu
-            Object.keys(leaveData).forEach(person => {
-                if (leaveData[person].urlopy.includes(checkDate)) {
-                    const li = document.createElement("li");
-                    li.textContent = `${person} jest na urlopie`;
-                    onLeaveList.appendChild(li);
+                const onLeaveList = [];
+                Object.keys(leaveData).forEach(person => {
+                    if (leaveData[person].urlopy.includes(formattedDate)) {
+                        onLeaveList.push(person);
+                    }
+                });
+
+                if (onLeaveList.length > 0) {
+                    const listItem = document.createElement("div");
+                    listItem.innerHTML = `${formattedDate}: ${onLeaveList.join(", ")} na urlopie`;
+                    upcomingLeave.appendChild(listItem);
                 }
-            });
-
-            document.getElementById("leaveResult").style.display = onLeaveList.innerHTML ? "block" : "none";
+            }
         }
 
+        // Call on page load
         updateTable();
+        showUpcomingLeaves();
     </script>
 
 </body>
