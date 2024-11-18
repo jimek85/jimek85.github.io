@@ -33,6 +33,10 @@
         .input-date {
             margin-top: 10px;
         }
+        .remaining-days {
+            font-weight: bold;
+            color: green;
+        }
     </style>
 </head>
 <body>
@@ -50,6 +54,7 @@
             <tr>
                 <th>Imię</th>
                 <th>Urlopy</th>
+                <th>Pozostało dni</th>
                 <th>Dodaj Urlop</th>
             </tr>
         </thead>
@@ -57,19 +62,105 @@
             <tr data-person="Paweł">
                 <td>Paweł</td>
                 <td id="leaveList-Paweł"></td>
+                <td id="remaining-Paweł" class="remaining-days">7</td>
                 <td><button onclick="addLeave('Paweł')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Artur">
                 <td>Artur</td>
                 <td id="leaveList-Artur"></td>
+                <td id="remaining-Artur" class="remaining-days">19</td>
                 <td><button onclick="addLeave('Artur')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Ewa">
+                <td>Ewa</td>
+                <td id="leaveList-Ewa"></td>
+                <td id="remaining-Ewa" class="remaining-days">4</td>
+                <td><button onclick="addLeave('Ewa')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Radosław">
+                <td>Radosław</td>
+                <td id="leaveList-Radosław"></td>
+                <td id="remaining-Radosław" class="remaining-days">10</td>
+                <td><button onclick="addLeave('Radosław')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Paulina">
+                <td>Paulina</td>
+                <td id="leaveList-Paulina"></td>
+                <td id="remaining-Paulina" class="remaining-days">10</td>
+                <td><button onclick="addLeave('Paulina')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Monika">
+                <td>Monika</td>
+                <td id="leaveList-Monika"></td>
+                <td id="remaining-Monika" class="remaining-days">4</td>
+                <td><button onclick="addLeave('Monika')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Michał">
                 <td>Michał</td>
                 <td id="leaveList-Michał"></td>
+                <td id="remaining-Michał" class="remaining-days">4</td>
                 <td><button onclick="addLeave('Michał')">Dodaj urlop</button></td>
             </tr>
-            <!-- Dodaj więcej pracowników -->
+            <tr data-person="Ewa B">
+                <td>Ewa B</td>
+                <td id="leaveList-Ewa B"></td>
+                <td id="remaining-Ewa B" class="remaining-days">4</td>
+                <td><button onclick="addLeave('Ewa B')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Dariusz">
+                <td>Dariusz</td>
+                <td id="leaveList-Dariusz"></td>
+                <td id="remaining-Dariusz" class="remaining-days">8</td>
+                <td><button onclick="addLeave('Dariusz')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Kamil P">
+                <td>Kamil P</td>
+                <td id="leaveList-Kamil P"></td>
+                <td id="remaining-Kamil P" class="remaining-days">10</td>
+                <td><button onclick="addLeave('Kamil P')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Marcin S">
+                <td>Marcin S</td>
+                <td id="leaveList-Marcin S"></td>
+                <td id="remaining-Marcin S" class="remaining-days">10</td>
+                <td><button onclick="addLeave('Marcin S')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Daniel">
+                <td>Daniel</td>
+                <td id="leaveList-Daniel"></td>
+                <td id="remaining-Daniel" class="remaining-days">6</td>
+                <td><button onclick="addLeave('Daniel')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Marcin W">
+                <td>Marcin W</td>
+                <td id="leaveList-Marcin W"></td>
+                <td id="remaining-Marcin W" class="remaining-days">4</td>
+                <td><button onclick="addLeave('Marcin W')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Agnieszka">
+                <td>Agnieszka</td>
+                <td id="leaveList-Agnieszka"></td>
+                <td id="remaining-Agnieszka" class="remaining-days">2</td>
+                <td><button onclick="addLeave('Agnieszka')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Karolina">
+                <td>Karolina</td>
+                <td id="leaveList-Karolina"></td>
+                <td id="remaining-Karolina" class="remaining-days">6</td>
+                <td><button onclick="addLeave('Karolina')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Kamil S">
+                <td>Kamil S</td>
+                <td id="leaveList-Kamil S"></td>
+                <td id="remaining-Kamil S" class="remaining-days">6</td>
+                <td><button onclick="addLeave('Kamil S')">Dodaj urlop</button></td>
+            </tr>
+            <tr data-person="Sebastian">
+                <td>Sebastian</td>
+                <td id="leaveList-Sebastian"></td>
+                <td id="remaining-Sebastian" class="remaining-days">8</td>
+                <td><button onclick="addLeave('Sebastian')">Dodaj urlop</button></td>
+            </tr>
         </tbody>
     </table>
 
@@ -79,80 +170,69 @@
     </div>
 
     <script>
-        // Dane pracowników i ich urlopy
+        // Dane pracowników i ich urlopy (maksymalna liczba dni urlopu = 26)
         const leaveData = {
-            "Paweł": [],
-            "Artur": [],
-            "Michał": [],
-            // Dodaj innych pracowników tutaj
+            "Paweł": { urlopy: [], dniUrlopu: 7 },
+            "Artur": { urlopy: [], dniUrlopu: 19 },
+            "Ewa": { urlopy: [], dniUrlopu: 4 },
+            "Radosław": { urlopy: [], dniUrlopu: 10 },
+            "Paulina": { urlopy: [], dniUrlopu: 10 },
+            "Monika": { urlopy: [], dniUrlopu: 4 },
+            "Michał": { urlopy: [], dniUrlopu: 4 },
+            "Ewa B": { urlopy: [], dniUrlopu: 4 },
+            "Dariusz": { urlopy: [], dniUrlopu: 8 },
+            "Kamil P": { urlopy: [], dniUrlopu: 10 },
+            "Marcin S": { urlopy: [], dniUrlopu: 10 },
+            "Daniel": { urlopy: [], dniUrlopu: 6 },
+            "Marcin W": { urlopy: [], dniUrlopu: 4 },
+            "Agnieszka": { urlopy: [], dniUrlopu: 2 },
+            "Karolina": { urlopy: [], dniUrlopu: 6 },
+            "Kamil S": { urlopy: [], dniUrlopu: 6 },
+            "Sebastian": { urlopy: [], dniUrlopu: 8 }
         };
 
-        // Funkcja, która zapisuje dane do localStorage
-        function saveLeaveData() {
-            localStorage.setItem('leaveData', JSON.stringify(leaveData));
-        }
-
-        // Funkcja ładowania danych z localStorage
-        function loadLeaveData() {
-            const savedData = JSON.parse(localStorage.getItem('leaveData'));
-            if (savedData) {
-                Object.keys(savedData).forEach(person => {
-                    leaveData[person] = savedData[person];
-                    updateLeaveList(person);
-                });
-            }
-        }
-
-        // Funkcja, która aktualizuje listę urlopów w tabeli
-        function updateLeaveList(person) {
-            const leaveList = leaveData[person];
-            const leaveListElement = document.getElementById('leaveList-' + person);
-            leaveListElement.innerHTML = leaveList.length > 0 ? leaveList.join('<br>') : 'Brak urlopów';
-        }
-
-        // Funkcja dodająca urlop
         function addLeave(person) {
-            const date = prompt(`Podaj datę urlopu dla ${person} (format: RRRR-MM-DD):`);
-            if (date && isValidDate(date)) {
-                leaveData[person].push(date);
-                updateLeaveList(person);
-                saveLeaveData();
+            const leaveDate = prompt("Wprowadź datę urlopu (yyyy-mm-dd):");
+            if (leaveDate && !leaveData[person].urlopy.includes(leaveDate)) {
+                leaveData[person].urlopy.push(leaveDate);
+                updateTable();
             } else {
-                alert('Błędny format daty. Spróbuj ponownie.');
+                alert("Data już została dodana lub nieprawidłowy format!");
             }
         }
 
-        // Funkcja sprawdzająca, kto jest na urlopie w danym dniu
-        function checkWhoIsOnLeave() {
-            const selectedDate = document.getElementById('checkDate').value;
-            if (!selectedDate) {
-                alert('Wybierz datę!');
-                return;
-            }
-
-            const onLeave = [];
+        function updateTable() {
+            // Zaktualizowanie tabeli po dodaniu urlopu
             Object.keys(leaveData).forEach(person => {
-                if (leaveData[person].includes(selectedDate)) {
-                    onLeave.push(person);
+                const leaveList = document.getElementById(`leaveList-${person}`);
+                leaveList.textContent = leaveData[person].urlopy.join(", ");
+                
+                // Obliczanie pozostałych dni urlopu
+                const remainingDays = 26 - leaveData[person].urlopy.length;
+                document.getElementById(`remaining-${person}`).textContent = remainingDays;
+            });
+        }
+
+        function checkWhoIsOnLeave() {
+            const checkDate = document.getElementById("checkDate").value;
+            if (!checkDate) return;
+
+            const onLeaveList = document.getElementById("onLeaveList");
+            onLeaveList.innerHTML = "";
+
+            // Sprawdź, kto jest na urlopie w danym dniu
+            Object.keys(leaveData).forEach(person => {
+                if (leaveData[person].urlopy.includes(checkDate)) {
+                    const li = document.createElement("li");
+                    li.textContent = `${person} jest na urlopie`;
+                    onLeaveList.appendChild(li);
                 }
             });
 
-            // Wyświetlenie listy osób na urlopie w danym dniu
-            const leaveResult = document.getElementById('leaveResult');
-            const onLeaveList = document.getElementById('onLeaveList');
-            onLeaveList.innerHTML = onLeave.length > 0 ? onLeave.join('<br>') : 'Brak osób na urlopie w tym dniu.';
-            leaveResult.style.display = 'block';
+            document.getElementById("leaveResult").style.display = onLeaveList.innerHTML ? "block" : "none";
         }
 
-        // Funkcja do walidacji formatu daty (YYYY-MM-DD)
-        function isValidDate(date) {
-            const regex = /^\d{4}-\d{2}-\d{2}$/;
-            return regex.test(date);
-        }
-
-        // Załadowanie danych z localStorage przy starcie
-        window.onload = loadLeaveData;
-
+        updateTable();
     </script>
 
 </body>
