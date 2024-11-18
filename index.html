@@ -64,113 +64,87 @@
 </table>
 
 <script>
-// Lista osób i ich urlopów (daty)
-const people = [
-    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17', '2024-04-22', '2024-04-23', '2024-05-02', '2024-05-29', '2024-07-01', '2024-07-02', '2024-07-03', '2024-07-04', '2024-07-05', '2024-08-29', '2024-08-30', '2024-09-05', '2024-10-10', '2024-10-23', '2024-10-28', '2024-11-08', '2024-11-12'], maxLeaves: 26 },
-    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06', '2024-07-22', '2024-08-26', '2024-09-18', '2024-10-01', '2024-10-18'], maxLeaves: 26 },
-    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16', '2024-04-24', '2024-04-25', '2024-05-20', '2024-05-28', '2024-05-29', '2024-05-31', '2024-06-20', '2024-07-08', '2024-07-09', '2024-07-10', '2024-07-11', '2024-07-12', '2024-08-08', '2024-08-16', '2024-08-29', '2024-08-30', '2024-09-02', '2024-09-03', '2024-10-16', '2024-10-17', '2024-10-18', '2024-10-28'], maxLeaves: 26 },
-    { name: 'Radosław', leaves: ['2024-05-16', '2024-05-20', '2024-06-10', '2024-06-17', '2024-07-22', '2024-07-23', '2024-07-24', '2024-07-25', '2024-07-26', '2024-07-29', '2024-08-16', '2024-09-09', '2024-09-10', '2024-10-11', '2024-10-22', '2024-11-25'], maxLeaves: 26 },
-    { name: 'Paulina', leaves: ['2024-03-12', '2024-03-13', '2024-03-26', '2024-04-15', '2024-05-09', '2024-05-22', '2024-05-31', '2024-06-06', '2024-06-12', '2024-06-25', '2024-07-26', '2024-09-05', '2024-09-09', '2024-09-17', '2024-09-23', '2024-10-03', '2024-10-04', '2024-10-08'], maxLeaves: 26 },
-    { name: 'Monika', leaves: ['2024-02-01', '2024-02-02', '2024-02-05', '2024-03-14', '2024-03-29', '2024-04-22', '2024-05-02', '2024-05-10', '2024-05-13', '2024-05-31', '2024-07-11', '2024-08-05', '2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-08-12', '2024-08-13', '2024-08-14', '2024-08-16', '2024-09-10', '2024-10-04', '2024-10-31', '2024-11-06'], maxLeaves: 26 },
-    { name: 'Michał', leaves: ['2024-04-24', '2024-04-25', '2024-04-26', '2024-05-31', '2024-06-11', '2024-06-25', '2024-07-15', '2024-07-16', '2024-07-17', '2024-07-29', '2024-07-30', '2024-07-31', '2024-08-01', '2024-08-02', '2024-08-05', '2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-09-17', '2024-09-25', '2024-11-19'], maxLeaves: 26 },
-    { name: 'Ewa', leaves: ['2024-10-11', '2024-10-18', '2024-10-25', '2024-11-08', '2024-11-12', '2024-11-13', '2024-11-14', '2024-11-15', '2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 26 },
-    { name: 'Dariusz', leaves: ['2024-04-19', '2024-05-07', '2024-05-23', '2024-06-03', '2024-06-19', '2024-06-27', '2024-07-04', '2024-07-18', '2024-07-19', '2024-07-29', '2024-07-30', '2024-07-31', '2024-08-01', '2024-08-02', '2024-09-16', '2024-09-19', '2024-09-24', '2024-10-10', '2024-11-07', '2024-11-13'], maxLeaves: 26 },
-    { name: 'Kamil P', leaves: ['2024-03-26', '2024-04-26', '2024-05-13', '2024-05-14', '2024-05-15', '2024-05-16', '2024-05-17', '2024-07-03', '2024-07-15', '2024-09-19', '2024-09-20', '2024-10-09', '2024-11-12', '2024-12-27', '2024-12-30', '2024-12-31', '2025-01-02', '2025-01-03'], maxLeaves: 26 },
-    { name: 'Marcin S', leaves: ['2024-04-17', '2024-05-09', '2024-05-15', '2024-05-13', '2024-06-14', '2024-06-17', '2024-06-18', '2024-06-19', '2024-06-20', '2024-06-21', '2024-07-18', '2024-08-22', '2024-08-23', '2024-09-03', '2024-09-11', '2024-09-20', '2024-10-19'], maxLeaves: 26 },
-    { name: 'Daniel', leaves: ['2024-02-20', '2024-05-02', '2024-05-13', '2024-05-14', '2024-05-15', '2024-05-16', '2024-05-17', '2024-06-14', '2024-06-17', '2024-06-18', '2024-06-19', '2024-06-20', '2024-08-16', '2024-08-27', '2024-09-30', '2024-10-01', '2024-10-02', '2024-10-03', '2024-10-04'], maxLeaves: 26 },
-    { name: 'Marcin', leaves: ['2024-05-31', '2024-07-15', '2024-07-16', '2024-07-17', '2024-08-19', '2024-08-20', '2024-08-21', '2024-08-22', '2024-08-23', '2024-08-26', '2024-08-27', '2024-08-28', '2024-08-29', '2024-09-02', '2024-09-18', '2024-10-28', '2024-12-16', '2024-12-17', '2024-12-18', '2024-12-19', '2024-12-20'], maxLeaves: 26 },
-    { name: 'Agnieszka', leaves: ['2024-03-29', '2024-04-12', '2024-05-08', '2024-05-31', '2024-06-04', '2024-07-10', '2024-07-31', '2024-08-12', '2024-08-13', '2024-08-14', '2024-08-16', '2024-08-19', '2024-08-20', '2024-08-21', '2024-08-22', '2024-08-23', '2024-09-26', '2024-09-27', '2024-10-09', '2024-11-07', '2024-12-11', '2024-12-23', '2024-12-24', '2024-12-27', '2024-12-30', '2024-12-31'], maxLeaves: 26 },
-    { name: 'Karolina', leaves: ['2024-04-15', '2024-05-02', '2024-05-23', '2024-06-07', '2024-06-10', '2024-06-11', '2024-06-12', '2024-06-13', '2024-06-14', '2024-07-12', '2024-08-02', '2024-08-26', '2024-09-13', '2024-10-17', '2024-10-31', '2024-12-06', '2024-12-27', '2024-12-30', '2024-12-31'], maxLeaves: 26 },
-    { name: 'Kamil S', leaves: ['2024-05-10', '2024-05-13', '2024-05-31', '2024-06-24', '2024-06-25', '2024-06-26', '2024-06-27', '2024-06-28', '2024-09-02', '2024-09-03', '2024-09-04', '2024-09-05', '2024-09-06', '2024-09-09', '2024-09-10', '2024-09-11', '2024-09-12', '2024-09-13', '2024-09-26', '2024-11-08'], maxLeaves: 26 },
-    { name: 'Paweł Sz', leaves: ['2024-01-19', '2024-02-22', '2024-02-23', '2024-03-22', '2024-05-02', '2024-06-03', '2024-07-04', '2024-07-05', '2024-07-16', '2024-08-05', '2024-08-06', '2024-08-07', '2024-08-08', '2024-08-09', '2024-08-12', '2024-08-13', '2024-08-14', '2024-10-17', '2024-11-18', '2024-11-21', '2024-11-22'], maxLeaves: 26 },
-    { name: 'Kamil F', leaves: ['2024-05-02', '2024-06-03', '2024-06-04', '2024-06-05', '2024-06-06', '2024-06-07', '2024-06-10', '2024-06-11', '2024-06-12', '2024-06-13', '2024-08-19', '2024-10-11', '2024-11-05', '2025-01-02', '2025-01-03'], maxLeaves: 26 },
-    { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-05-21', '2024-04-10', '2024-04-11', '2024-07-09', '2024-07-10', '2024-08-21', '2024-09-16', '2024-10-10', '2024-10-16', '2024-11-06'], maxLeaves: 26 }
+// Data, od której liczymy urlopy
+const currentDate = new Date('2024-11-18');
+
+// Lista początkowa urlopów z dniami urlopu i liczbą dni pozostałych
+const initialPeople = [
+    { name: 'Paweł', leaves: ['2024-11-18', '2024-11-21', '2024-11-22'], maxLeaves: 7 },
+    { name: 'Artur', leaves: ['2024-11-22', '2024-12-01', '2024-12-18'], maxLeaves: 19 },
+    { name: 'Ewa', leaves: ['2024-11-20', '2024-11-21'], maxLeaves: 4 },
+    { name: 'Radosław', leaves: ['2024-11-19', '2024-11-25'], maxLeaves: 10 },
+    { name: 'Paulina', leaves: ['2024-11-12', '2024-11-13', '2024-11-26'], maxLeaves: 10 },
+    { name: 'Monika', leaves: ['2024-11-01', '2024-11-02'], maxLeaves: 4 },
+    { name: 'Michał', leaves: ['2024-11-19'], maxLeaves: 4 },
+    { name: 'Ewa B', leaves: ['2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 4 },
+    { name: 'Dariusz', leaves: ['2024-11-19', '2024-11-23', '2024-11-30'], maxLeaves: 8 },
+    { name: 'Kamil P', leaves: ['2024-12-27', '2024-12-30', '2024-12-31'], maxLeaves: 10 },
+    { name: 'Marcin S', leaves: ['2024-11-19'], maxLeaves: 10 },
+    { name: 'Daniel', leaves: ['2024-02-20'], maxLeaves: 6 },
+    { name: 'Marcin W', leaves: ['2024-12-16', '2024-12-17', '2024-12-18'], maxLeaves: 4 },
+    { name: 'Agnieszka', leaves: ['2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 2 },
+    { name: 'Karolina', leaves: ['2024-12-06', '2024-12-27', '2024-12-30'], maxLeaves: 6 },
+    { name: 'Kamil S', leaves: ['2024-12-10', '2024-12-13'], maxLeaves: 6 },
+    { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-07-09'], maxLeaves: 8 }
 ];
-// Funkcja do dodawania urlopu
-function addLeave(personIndex, leaveDate) {
-    const person = people[personIndex];
-    if (!person.leaves.includes(leaveDate)) {
-        person.leaves.push(leaveDate);
-        displayPeople();
-        updateTodayLeaves();
-    }
+
+// Funkcja do filtrowania dat urlopu po 18 listopada
+function filterFutureLeaves(leaves) {
+    return leaves.filter(leave => new Date(leave) >= currentDate);
 }
 
-// Funkcja do usuwania urlopu
-function removeLeave(personIndex, leaveDate) {
-    const person = people[personIndex];
-    const index = person.leaves.indexOf(leaveDate);
-    if (index !== -1) {
-        person.leaves.splice(index, 1);
-        displayPeople();
-        updateTodayLeaves();
-    }
-}
-
-// Funkcja do aktualizacji informacji o urlopie dzisiaj
-function updateTodayLeaves() {
-    const today = new Date().toISOString().split('T')[0];
-    const todayLeaves = people
-        .filter(person => person.leaves.includes(today))
-        .map(person => person.name)
-        .join(', ');
-    const todayLeavesList = document.getElementById('todayLeavesList');
-    if (todayLeaves) {
-        todayLeavesList.textContent = todayLeaves + " są na urlopie dzisiaj.";
-    } else {
-        todayLeavesList.textContent = "Brak osób na urlopie dzisiaj.";
-    }
-}
-
-// Funkcja do wyświetlania tabeli
-function displayPeople() {
+// Funkcja, aby wyświetlić dane na stronie
+function renderTable() {
     const tableBody = document.getElementById('tableBody');
-    tableBody.innerHTML = '';
+    tableBody.innerHTML = ''; // Wyczyść tabelę przed ponownym renderowaniem
 
-    people.forEach((person, index) => {
+    initialPeople.forEach(person => {
+        // Filtrowanie tylko przyszłych dat
+        const futureLeaves = filterFutureLeaves(person.leaves);
+
+        // Obliczanie ilości dni urlopu (nie zliczamy 'opieki')
+        const remainingDays = person.maxLeaves - futureLeaves.length;
+
+        // Tworzymy wiersz tabeli
         const row = document.createElement('tr');
-
-        const nameCell = document.createElement('td');
-        nameCell.textContent = `${person.name} (${person.maxLeaves - person.leaves.length})`;
-        row.appendChild(nameCell);
-
-        const leavesCell = document.createElement('td');
-        leavesCell.textContent = person.leaves.join(', ');
-        row.appendChild(leavesCell);
-
-        const removeButtonCell = document.createElement('td');
-        person.leaves.forEach((leaveDate) => {
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'Usuń';
-            removeButton.className = 'remove-button';
-            removeButton.addEventListener('click', () => removeLeave(index, leaveDate));
-            removeButtonCell.appendChild(removeButton);
-        });
-        row.appendChild(removeButtonCell);
-
-        // Dodanie przycisku do dodawania urlopu
-        const addButtonCell = document.createElement('td');
-        const addButton = document.createElement('button');
-        addButton.textContent = 'Dodaj urlop';
-        addButton.className = 'button';
-
-        // Kalendarz daty
-        const dateInput = document.createElement('input');
-        dateInput.type = 'date';
-        dateInput.addEventListener('change', (e) => {
-            addLeave(index, e.target.value);
-        });
-        addButtonCell.appendChild(dateInput);
-        row.appendChild(addButtonCell);
-
+        row.innerHTML = `
+            <td>${person.name}</td>
+            <td>${futureLeaves.join('<br>')}</td>
+            <td>${remainingDays} dni</td>
+            <td><button class="button" onclick="addLeave('${person.name}')">Dodaj urlop</button></td>
+        `;
         tableBody.appendChild(row);
     });
 }
 
-// Zaktualizuj na początku
-updateTodayLeaves();
-displayPeople();
+// Funkcja, aby dodać urlop
+function addLeave(name) {
+    const person = initialPeople.find(p => p.name === name);
+    const newLeaveDate = prompt(`Podaj datę urlopu dla ${name} (w formacie RRRR-MM-DD):`);
+    
+    if (newLeaveDate && !person.leaves.includes(newLeaveDate)) {
+        person.leaves.push(newLeaveDate);
+        renderTable(); // Przeładuj tabelę po dodaniu urlopu
+    }
+}
 
+// Funkcja, aby sprawdzić, kto jest na urlopie dzisiaj
+function checkTodayLeaves() {
+    const todayLeaves = initialPeople.filter(person => 
+        person.leaves.some(leave => new Date(leave).toDateString() === currentDate.toDateString())
+    ).map(person => person.name);
+
+    const todayLeavesList = document.getElementById('todayLeavesList');
+    if (todayLeaves.length > 0) {
+        todayLeavesList.innerHTML = todayLeaves.join(', ');
+    } else {
+        todayLeavesList.innerHTML = 'Brak osób na urlopie dzisiaj.';
+    }
+}
+
+// Renderuj tabelę i sprawdź urlopy na dzisiaj
+renderTable();
+checkTodayLeaves();
 </script>
 
 </body>
