@@ -3,124 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarządzanie Urlopami</title>
+    <title>Urlopy Pracowników</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
+            margin-bottom: 20px;
         }
         table, th, td {
             border: 1px solid #ddd;
-        }
-        th, td {
             padding: 8px;
             text-align: center;
         }
-        .checked {
-            background-color: #d3f8d3;
+        th {
+            background-color: #f4f4f4;
         }
         button {
-            padding: 10px;
-            margin-top: 20px;
+            padding: 8px;
+            margin-top: 10px;
             cursor: pointer;
+        }
+        .highlight {
+            background-color: #f2f2f2;
+        }
+        .input-date {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
     <h1>Zarządzanie Urlopami</h1>
-    
-    <p>Wybierz daty urlopu dla pracowników:</p>
 
-    <!-- Tabela z danymi -->
+    <p>Wybierz datę, aby sprawdzić kto jest na urlopie:</p>
+    <input type="date" id="checkDate" class="input-date">
+    <button onclick="checkWhoIsOnLeave()">Sprawdź, kto jest na urlopie</button>
+
+    <h2>Pracownicy i ich urlopy:</h2>
+
     <table id="leaveTable">
         <thead>
             <tr>
                 <th>Imię</th>
-                <th>19.12.2024</th>
-                <th>20.12.2024</th>
-                <th>21.12.2024</th>
-                <th>22.12.2024</th>
-                <!-- Możesz dodać więcej dat w nagłówkach -->
+                <th>Urlopy</th>
+                <th>Dodaj Urlop</th>
             </tr>
         </thead>
         <tbody>
-            <!-- Wiersze z osobami i datami -->
             <tr data-person="Paweł">
                 <td>Paweł</td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-19"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-20"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-21"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-22"></td>
+                <td id="leaveList-Paweł"></td>
+                <td><button onclick="addLeave('Paweł')">Dodaj urlop</button></td>
             </tr>
             <tr data-person="Artur">
                 <td>Artur</td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-19"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-20"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-21"></td>
-                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-22"></td>
+                <td id="leaveList-Artur"></td>
+                <td><button onclick="addLeave('Artur')">Dodaj urlop</button></td>
             </tr>
-            <!-- Kolejne osoby -->
+            <tr data-person="Michał">
+                <td>Michał</td>
+                <td id="leaveList-Michał"></td>
+                <td><button onclick="addLeave('Michał')">Dodaj urlop</button></td>
+            </tr>
+            <!-- Dodaj więcej pracowników -->
         </tbody>
     </table>
 
-    <button id="saveButton">Zapisz zmiany</button>
-    <button id="resetButton">Resetuj zaznaczenia</button>
+    <div id="leaveResult" class="highlight" style="display:none;">
+        <h3>Na urlopie w wybranym dniu:</h3>
+        <ul id="onLeaveList"></ul>
+    </div>
 
     <script>
-        // Funkcja zapisująca zaznaczenia do localStorage
-        function saveLeaveData() {
-            const leaveData = {};
-            // Dla każdego wiersza w tabeli
-            document.querySelectorAll('tr[data-person]').forEach(row => {
-                const person = row.getAttribute('data-person');
-                leaveData[person] = [];
-                // Sprawdzamy wszystkie checkboxy w danym wierszu
-                row.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
-                    const date = checkbox.getAttribute('data-date');
-                    if (checkbox.checked) {
-                        leaveData[person].push(date);
-                    }
-                });
-            });
+        // Dane pracowników i ich urlopy
+        const leaveData = {
+            "Paweł": [],
+            "Artur": [],
+            "Michał": [],
+            // Dodaj innych pracowników tutaj
+        };
 
-            // Zapisujemy dane do localStorage
+        // Funkcja, która zapisuje dane do localStorage
+        function saveLeaveData() {
             localStorage.setItem('leaveData', JSON.stringify(leaveData));
-            alert('Zmiany zostały zapisane!');
         }
 
         // Funkcja ładowania danych z localStorage
         function loadLeaveData() {
-            const leaveData = JSON.parse(localStorage.getItem('leaveData'));
-            if (leaveData) {
-                document.querySelectorAll('tr[data-person]').forEach(row => {
-                    const person = row.getAttribute('data-person');
-                    const personLeaveData = leaveData[person] || [];
-
-                    row.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
-                        const date = checkbox.getAttribute('data-date');
-                        // Zaznaczamy checkbox, jeśli data urlopu jest w zapisanych danych
-                        checkbox.checked = personLeaveData.includes(date);
-                    });
+            const savedData = JSON.parse(localStorage.getItem('leaveData'));
+            if (savedData) {
+                Object.keys(savedData).forEach(person => {
+                    leaveData[person] = savedData[person];
+                    updateLeaveList(person);
                 });
             }
         }
 
-        // Funkcja resetująca zaznaczenia
-        function resetLeaveData() {
-            document.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
-                checkbox.checked = false;
-            });
+        // Funkcja, która aktualizuje listę urlopów w tabeli
+        function updateLeaveList(person) {
+            const leaveList = leaveData[person];
+            const leaveListElement = document.getElementById('leaveList-' + person);
+            leaveListElement.innerHTML = leaveList.length > 0 ? leaveList.join('<br>') : 'Brak urlopów';
         }
 
-        // Ładowanie danych przy starcie aplikacji
+        // Funkcja dodająca urlop
+        function addLeave(person) {
+            const date = prompt(`Podaj datę urlopu dla ${person} (format: RRRR-MM-DD):`);
+            if (date && isValidDate(date)) {
+                leaveData[person].push(date);
+                updateLeaveList(person);
+                saveLeaveData();
+            } else {
+                alert('Błędny format daty. Spróbuj ponownie.');
+            }
+        }
+
+        // Funkcja sprawdzająca, kto jest na urlopie w danym dniu
+        function checkWhoIsOnLeave() {
+            const selectedDate = document.getElementById('checkDate').value;
+            if (!selectedDate) {
+                alert('Wybierz datę!');
+                return;
+            }
+
+            const onLeave = [];
+            Object.keys(leaveData).forEach(person => {
+                if (leaveData[person].includes(selectedDate)) {
+                    onLeave.push(person);
+                }
+            });
+
+            // Wyświetlenie listy osób na urlopie w danym dniu
+            const leaveResult = document.getElementById('leaveResult');
+            const onLeaveList = document.getElementById('onLeaveList');
+            onLeaveList.innerHTML = onLeave.length > 0 ? onLeave.join('<br>') : 'Brak osób na urlopie w tym dniu.';
+            leaveResult.style.display = 'block';
+        }
+
+        // Funkcja do walidacji formatu daty (YYYY-MM-DD)
+        function isValidDate(date) {
+            const regex = /^\d{4}-\d{2}-\d{2}$/;
+            return regex.test(date);
+        }
+
+        // Załadowanie danych z localStorage przy starcie
         window.onload = loadLeaveData;
 
-        // Zapisz dane po kliknięciu przycisku
-        document.getElementById('saveButton').addEventListener('click', saveLeaveData);
-
-        // Resetuj dane po kliknięciu przycisku
-        document.getElementById('resetButton').addEventListener('click', resetLeaveData);
     </script>
+
 </body>
 </html>
