@@ -3,45 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>System Zarządzania Urlopami</title>
+    <title>Zarządzanie Urlopami</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             padding: 20px;
-            background-color: #f4f4f9;
+            background-color: #f9f9f9;
         }
         h1 {
             text-align: center;
         }
-        .form-container {
+        table {
+            width: 100%;
+            border-collapse: collapse;
             margin: 20px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 10px;
             text-align: center;
         }
-        input, button {
-            padding: 8px 12px;
-            margin: 5px;
-            font-size: 16px;
+        th {
+            background-color: #f2f2f2;
         }
-        button {
+        .button {
+            padding: 8px 16px;
             background-color: #4CAF50;
             color: white;
             border: none;
             cursor: pointer;
         }
-        button:hover {
+        .button:hover {
             background-color: #45a049;
         }
-        .leave-list {
-            margin-top: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+        .input-date {
+            padding: 8px 10px;
+            font-size: 14px;
         }
-        .leave-item {
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .full {
-            background-colo
+    </style>
+</head>
+<body>
+
+<h1>Zarządzanie Urlopami</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th>Osoba</th>
+            <th>Zaplanowane dni urlopu</th>
+            <th>Dodaj urlop</th>
+        </tr>
+    </thead>
+    <tbody id="table-body">
+        <!-- Lista osób i urlopów będzie generowana tutaj -->
+    </tbody>
+</table>
+
+<script>
+// Inicjalna lista osób z urlopami
+const people = [
+    { name: 'Paweł', leaves: ['2024-03-22', '2024-04-17'] },
+    { name: 'Artur', leaves: ['2024-04-22', '2024-05-06'] },
+    { name: 'Ewa K', leaves: ['2024-03-28', '2024-04-16'] },
+    { name: 'Radosław', leaves: ['2024-05-16', '2024-06-10'] },
+    { name: 'Paulina', leaves: ['2024-03-12', '2024-05-22'] },
+    { name: 'Monika', leaves: ['2024-02-01', '2024-03-14'] },
+    { name: 'Michał', leaves: ['2024-04-24', '2024-06-11'] },
+    { name: 'Dariusz', leaves: ['2024-04-19', '2024-05-23'] },
+    { name: 'Kamil P', leaves: ['2024-03-26', '2024-04-26'] },
+    { name: 'Marcin S', leaves: ['2024-04-17', '2024-05-13'] },
+    { name: 'Daniel', leaves: ['2024-02-20', '2024-05-02'] },
+    { name: 'Agnieszka', leaves: ['2024-03-29', '2024-04-12'] },
+    { name: 'Karolina', leaves: ['2024-04-15', '2024-05-02'] },
+    { name: 'Kamil S', leaves: ['2024-05-10', '2024-06-31'] },
+];
+
+// Funkcja generująca tabelę
+function generateTable() {
+    const tableBody = document.getElementById('table-body');
+    tableBody.innerHTML = ''; // Czyści istniejący wiersz
+
+    people.forEach(person => {
+        const row = document.createElement('tr');
+
+        // Komórka z imieniem
+        const nameCell = document.createElement('td');
+        nameCell.textContent = person.name;
+        row.appendChild(nameCell);
+
+        // Komórka z urlopami
+        const leavesCell = document.createElement('td');
+        leavesCell.textContent = person.leaves.length > 0 ? person.leaves.join(', ') : 'Brak urlopów';
+        row.appendChild(leavesCell);
+
+        // Komórka z przyciskiem do dodania urlopu
+        const buttonCell = document.createElement('td');
+        const addButton = document.createElement('button');
+        addButton.classList.add('button');
+        addButton.textContent = 'Dodaj urlop';
+        addButton.onclick = () => addLeave(person);
+        buttonCell.appendChild(addButton);
+        row.appendChild(buttonCell);
+
+        tableBody.appendChild(row);
+    });
+}
+
+// Funkcja do dodania urlopu
+function addLeave(person) {
+    const leaveDate = prompt('Podaj datę urlopu (format: YYYY-MM-DD):');
+
+    if (leaveDate && isValidDate(leaveDate)) {
+        // Dodajemy urlop do osoby
+        person.leaves.push(leaveDate);
+        // Odświeżamy tabelę
+        generateTable();
+    } else {
+        alert('Proszę podać poprawną datę!');
+    }
+}
+
+// Funkcja do sprawdzania poprawności daty
+function isValidDate(date) {
+    const regex = /^\d{4}-\d{2}-\d{2}$/;
+    return regex.test(date);
+}
+
+// Inicjalizacja tabeli po załadowaniu strony
+generateTable();
+
+</script>
+
+</body>
+</html>
