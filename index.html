@@ -3,149 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarządzanie urlopami</title>
+    <title>Zarządzanie Urlopami</title>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
         }
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
         th, td {
+            padding: 8px;
+            text-align: center;
+        }
+        .checked {
+            background-color: #d3f8d3;
+        }
+        button {
             padding: 10px;
-            text-align: left;
-        }
-        .button {
-            padding: 5px 10px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .remove-button {
-            padding: 5px 10px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .today-leaves {
             margin-top: 20px;
-            font-weight: bold;
-        }
-        input[type="date"] {
-            padding: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
-<h1>Lista urlopów</h1>
-
-<!-- Sekcja wyświetlająca osoby na urlopie w dzisiejszym dniu -->
-<div class="today-leaves">
-    <p><strong>Osoby na urlopie dzisiaj:</strong></p>
-    <div id="todayLeavesList">Brak osób na urlopie dzisiaj.</div>
-</div>
-
-<table>
-    <thead>
-        <tr>
-            <th>Osoba</th>
-            <th>Daty urlopu</th>
-            <th>Pozostało dni urlopu</th>
-            <th>Dodaj urlop</th>
-        </tr>
-    </thead>
-    <tbody id="tableBody">
-        <!-- Wiersze będą dodane przez JS -->
-    </tbody>
-</table>
-
-<script>
-// Data, od której liczymy urlopy
-const currentDate = new Date('2024-11-18');
-
-// Lista początkowa urlopów z dniami urlopu i liczbą dni pozostałych
-const initialPeople = [
-    { name: 'Paweł', leaves: ['2024-11-18', '2024-11-21', '2024-11-22'], maxLeaves: 7 },
-    { name: 'Artur', leaves: ['2024-11-22', '2024-12-01', '2024-12-18'], maxLeaves: 19 },
-    { name: 'Ewa', leaves: ['2024-11-20', '2024-11-21'], maxLeaves: 4 },
-    { name: 'Radosław', leaves: ['2024-11-19', '2024-11-25'], maxLeaves: 10 },
-    { name: 'Paulina', leaves: ['2024-11-12', '2024-11-13', '2024-11-26'], maxLeaves: 10 },
-    { name: 'Monika', leaves: ['2024-11-01', '2024-11-02'], maxLeaves: 4 },
-    { name: 'Michał', leaves: ['2024-11-19'], maxLeaves: 4 },
-    { name: 'Ewa B', leaves: ['2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 4 },
-    { name: 'Dariusz', leaves: ['2024-11-19', '2024-11-23', '2024-11-30'], maxLeaves: 8 },
-    { name: 'Kamil P', leaves: ['2024-12-27', '2024-12-30', '2024-12-31'], maxLeaves: 10 },
-    { name: 'Marcin S', leaves: ['2024-11-19'], maxLeaves: 10 },
-    { name: 'Daniel', leaves: ['2024-02-20'], maxLeaves: 6 },
-    { name: 'Marcin W', leaves: ['2024-12-16', '2024-12-17', '2024-12-18'], maxLeaves: 4 },
-    { name: 'Agnieszka', leaves: ['2024-12-23', '2024-12-24', '2024-12-27'], maxLeaves: 2 },
-    { name: 'Karolina', leaves: ['2024-12-06', '2024-12-27', '2024-12-30'], maxLeaves: 6 },
-    { name: 'Kamil S', leaves: ['2024-12-10', '2024-12-13'], maxLeaves: 6 },
-    { name: 'Sebastian', leaves: ['2024-02-19', '2024-05-14', '2024-07-09'], maxLeaves: 8 }
-];
-
-// Funkcja do filtrowania dat urlopu po 18 listopada
-function filterFutureLeaves(leaves) {
-    return leaves.filter(leave => new Date(leave) >= currentDate);
-}
-
-// Funkcja, aby wyświetlić dane na stronie
-function renderTable() {
-    const tableBody = document.getElementById('tableBody');
-    tableBody.innerHTML = ''; // Wyczyść tabelę przed ponownym renderowaniem
-
-    initialPeople.forEach(person => {
-        // Filtrowanie tylko przyszłych dat
-        const futureLeaves = filterFutureLeaves(person.leaves);
-
-        // Obliczanie ilości dni urlopu (nie zliczamy 'opieki')
-        const remainingDays = person.maxLeaves - futureLeaves.length;
-
-        // Tworzymy wiersz tabeli
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td>${person.name}</td>
-            <td>${futureLeaves.join('<br>')}</td>
-            <td>${remainingDays} dni</td>
-            <td><button class="button" onclick="addLeave('${person.name}')">Dodaj urlop</button></td>
-        `;
-        tableBody.appendChild(row);
-    });
-}
-
-// Funkcja, aby dodać urlop
-function addLeave(name) {
-    const person = initialPeople.find(p => p.name === name);
-    const newLeaveDate = prompt(`Podaj datę urlopu dla ${name} (w formacie RRRR-MM-DD):`);
+    <h1>Zarządzanie Urlopami</h1>
     
-    if (newLeaveDate && !person.leaves.includes(newLeaveDate)) {
-        person.leaves.push(newLeaveDate);
-        renderTable(); // Przeładuj tabelę po dodaniu urlopu
-    }
-}
+    <p>Wybierz daty urlopu dla pracowników:</p>
 
-// Funkcja, aby sprawdzić, kto jest na urlopie dzisiaj
-function checkTodayLeaves() {
-    const todayLeaves = initialPeople.filter(person => 
-        person.leaves.some(leave => new Date(leave).toDateString() === currentDate.toDateString())
-    ).map(person => person.name);
+    <!-- Tabela z danymi -->
+    <table id="leaveTable">
+        <thead>
+            <tr>
+                <th>Imię</th>
+                <th>19.12.2024</th>
+                <th>20.12.2024</th>
+                <th>21.12.2024</th>
+                <th>22.12.2024</th>
+                <!-- Możesz dodać więcej dat w nagłówkach -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Wiersze z osobami i datami -->
+            <tr data-person="Paweł">
+                <td>Paweł</td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-19"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-20"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-21"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-22"></td>
+            </tr>
+            <tr data-person="Artur">
+                <td>Artur</td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-19"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-20"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-21"></td>
+                <td><input type="checkbox" class="leaveCheckbox" data-date="2024-12-22"></td>
+            </tr>
+            <!-- Kolejne osoby -->
+        </tbody>
+    </table>
 
-    const todayLeavesList = document.getElementById('todayLeavesList');
-    if (todayLeaves.length > 0) {
-        todayLeavesList.innerHTML = todayLeaves.join(', ');
-    } else {
-        todayLeavesList.innerHTML = 'Brak osób na urlopie dzisiaj.';
-    }
-}
+    <button id="saveButton">Zapisz zmiany</button>
+    <button id="resetButton">Resetuj zaznaczenia</button>
 
-// Renderuj tabelę i sprawdź urlopy na dzisiaj
-renderTable();
-checkTodayLeaves();
-</script>
+    <script>
+        // Funkcja zapisująca zaznaczenia do localStorage
+        function saveLeaveData() {
+            const leaveData = {};
+            // Dla każdego wiersza w tabeli
+            document.querySelectorAll('tr[data-person]').forEach(row => {
+                const person = row.getAttribute('data-person');
+                leaveData[person] = [];
+                // Sprawdzamy wszystkie checkboxy w danym wierszu
+                row.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
+                    const date = checkbox.getAttribute('data-date');
+                    if (checkbox.checked) {
+                        leaveData[person].push(date);
+                    }
+                });
+            });
 
+            // Zapisujemy dane do localStorage
+            localStorage.setItem('leaveData', JSON.stringify(leaveData));
+            alert('Zmiany zostały zapisane!');
+        }
+
+        // Funkcja ładowania danych z localStorage
+        function loadLeaveData() {
+            const leaveData = JSON.parse(localStorage.getItem('leaveData'));
+            if (leaveData) {
+                document.querySelectorAll('tr[data-person]').forEach(row => {
+                    const person = row.getAttribute('data-person');
+                    const personLeaveData = leaveData[person] || [];
+
+                    row.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
+                        const date = checkbox.getAttribute('data-date');
+                        // Zaznaczamy checkbox, jeśli data urlopu jest w zapisanych danych
+                        checkbox.checked = personLeaveData.includes(date);
+                    });
+                });
+            }
+        }
+
+        // Funkcja resetująca zaznaczenia
+        function resetLeaveData() {
+            document.querySelectorAll('.leaveCheckbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+        }
+
+        // Ładowanie danych przy starcie aplikacji
+        window.onload = loadLeaveData;
+
+        // Zapisz dane po kliknięciu przycisku
+        document.getElementById('saveButton').addEventListener('click', saveLeaveData);
+
+        // Resetuj dane po kliknięciu przycisku
+        document.getElementById('resetButton').addEventListener('click', resetLeaveData);
+    </script>
 </body>
 </html>
