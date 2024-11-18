@@ -3,236 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urlopy Pracowników</title>
+    <title>Plan Urlopów</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
         }
-        table, th, td {
-            border: 1px solid #ddd;
+        th, td {
             padding: 8px;
+            border: 1px solid #ddd;
             text-align: center;
         }
-        th {
-            background-color: #f4f4f4;
-        }
-        button {
-            padding: 8px;
-            margin-top: 10px;
-            cursor: pointer;
-        }
-        .highlight {
-            background-color: #f2f2f2;
-        }
-        .input-date {
-            margin-top: 10px;
-        }
-        .remaining-days {
-            font-weight: bold;
-            color: green;
-        }
-        .leave-list {
-            display: flex;
-            flex-direction: column;
-        }
-        .leave-item {
-            margin-bottom: 5px;
-        }
-        .remove-btn {
-            margin-left: 10px;
-            background-color: #f44336;
+        .button {
+            padding: 5px 10px;
+            background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 5px;
             cursor: pointer;
+        }
+        .button-danger {
+            background-color: red;
+        }
+        .button:hover {
+            opacity: 0.8;
         }
     </style>
 </head>
 <body>
 
-    <h1>Zarządzanie Urlopami</h1>
+<h1>Plan Urlopów - Stan na dzień 18.11.2024</h1>
 
-    <!-- Sekcja na górze: Kto jest na urlopie na 3 dni do przodu -->
-    <h3>Na urlopie w najbliższych 3 dniach (od 18.11.2024):</h3>
-    <div id="upcomingLeave"></div>
+<!-- Sekcja dla listy osób na urlopie w najbliższych 3 dniach -->
+<div>
+    <h3>Na urlopie w nadchodzących dniach:</h3>
+    <div id="current-vacations"></div>
+</div>
 
-    <h2>Pracownicy i ich urlopy:</h2>
+<!-- Tabela z listą pracowników i dniami urlopowymi -->
+<table id="vacationTable">
+    <thead>
+        <tr>
+            <th>Imię</th>
+            <th>Urlop</th>
+            <th>Dni urlopu</th>
+            <th>Akcja</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Wiersze z danymi pracowników i dniami urlopu -->
+        <!-- Przykład dla jednej osoby -->
+        <tr>
+            <td>Paweł</td>
+            <td>
+                <input type="checkbox" class="vacation-checkbox" data-person="Paweł" data-date="19.11.2024"> 19.11.2024
+                <input type="checkbox" class="vacation-checkbox" data-person="Paweł" data-date="20.11.2024"> 20.11.2024
+                <input type="checkbox" class="vacation-checkbox" data-person="Paweł" data-date="21.11.2024"> 21.11.2024
+                <!-- Dodaj kolejne dni urlopu -->
+            </td>
+            <td>7</td>
+            <td>
+                <button class="button" onclick="removeDate('Paweł', '19.11.2024')">Usuń 19.11.2024</button>
+            </td>
+        </tr>
+        <!-- Dodaj kolejne osoby w podobny sposób -->
+    </tbody>
+</table>
 
-    <table id="leaveTable">
-        <thead>
-            <tr>
-                <th>Imię</th>
-                <th>Urlopy</th>
-                <th>Pozostało dni</th>
-                <th>Dodaj Urlop</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Lista pracowników -->
-            <tr data-person="Paweł">
-                <td>Paweł</td>
-                <td id="leaveList-Paweł" class="leave-list"></td>
-                <td id="remaining-Paweł" class="remaining-days">7</td>
-                <td><button onclick="addLeave('Paweł')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Artur">
-                <td>Artur</td>
-                <td id="leaveList-Artur" class="leave-list"></td>
-                <td id="remaining-Artur" class="remaining-days">19</td>
-                <td><button onclick="addLeave('Artur')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Ewa">
-                <td>Ewa</td>
-                <td id="leaveList-Ewa" class="leave-list"></td>
-                <td id="remaining-Ewa" class="remaining-days">4</td>
-                <td><button onclick="addLeave('Ewa')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Radosław">
-                <td>Radosław</td>
-                <td id="leaveList-Radosław" class="leave-list"></td>
-                <td id="remaining-Radosław" class="remaining-days">10</td>
-                <td><button onclick="addLeave('Radosław')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Paulina">
-                <td>Paulina</td>
-                <td id="leaveList-Paulina" class="leave-list"></td>
-                <td id="remaining-Paulina" class="remaining-days">10</td>
-                <td><button onclick="addLeave('Paulina')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Monika">
-                <td>Monika</td>
-                <td id="leaveList-Monika" class="leave-list"></td>
-                <td id="remaining-Monika" class="remaining-days">4</td>
-                <td><button onclick="addLeave('Monika')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Michał">
-                <td>Michał</td>
-                <td id="leaveList-Michał" class="leave-list"></td>
-                <td id="remaining-Michał" class="remaining-days">4</td>
-                <td><button onclick="addLeave('Michał')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Ewa B">
-                <td>Ewa B</td>
-                <td id="leaveList-Ewa B" class="leave-list"></td>
-                <td id="remaining-Ewa B" class="remaining-days">4</td>
-                <td><button onclick="addLeave('Ewa B')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Dariusz">
-                <td>Dariusz</td>
-                <td id="leaveList-Dariusz" class="leave-list"></td>
-                <td id="remaining-Dariusz" class="remaining-days">8</td>
-                <td><button onclick="addLeave('Dariusz')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Kamil P">
-                <td>Kamil P</td>
-                <td id="leaveList-Kamil P" class="leave-list"></td>
-                <td id="remaining-Kamil P" class="remaining-days">10</td>
-                <td><button onclick="addLeave('Kamil P')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Marcin S">
-                <td>Marcin S</td>
-                <td id="leaveList-Marcin S" class="leave-list"></td>
-                <td id="remaining-Marcin S" class="remaining-days">10</td>
-                <td><button onclick="addLeave('Marcin S')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Daniel">
-                <td>Daniel</td>
-                <td id="leaveList-Daniel" class="leave-list"></td>
-                <td id="remaining-Daniel" class="remaining-days">6</td>
-                <td><button onclick="addLeave('Daniel')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Marcin W">
-                <td>Marcin W</td>
-                <td id="leaveList-Marcin W" class="leave-list"></td>
-                <td id="remaining-Marcin W" class="remaining-days">4</td>
-                <td><button onclick="addLeave('Marcin W')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Agnieszka">
-                <td>Agnieszka</td>
-                <td id="leaveList-Agnieszka" class="leave-list"></td>
-                <td id="remaining-Agnieszka" class="remaining-days">2</td>
-                <td><button onclick="addLeave('Agnieszka')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Karolina">
-                <td>Karolina</td>
-                <td id="leaveList-Karolina" class="leave-list"></td>
-                <td id="remaining-Karolina" class="remaining-days">6</td>
-                <td><button onclick="addLeave('Karolina')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Kamil S">
-                <td>Kamil S</td>
-                <td id="leaveList-Kamil S" class="leave-list"></td>
-                <td id="remaining-Kamil S" class="remaining-days">6</td>
-                <td><button onclick="addLeave('Kamil S')">Dodaj urlop</button></td>
-            </tr>
-            <tr data-person="Sebastian">
-                <td>Sebastian</td>
-                <td id="leaveList-Sebastian" class="leave-list"></td>
-                <td id="remaining-Sebastian" class="remaining-days">8</td>
-                <td><button onclick="addLeave('Sebastian')">Dodaj urlop</button></td>
-            </tr>
-        </tbody>
-    </table>
+<script>
+   const vacationData = {
+    "Paweł": { remaining: 7, daysOff: ["19.11.2024", "20.11.2024", "21.11.2024"] },
+    "Artur": { remaining: 19, daysOff: ["22.11.2024", "23.11.2024", "25.11.2024"] },
+    "Ewa": { remaining: 4, daysOff: ["19.11.2024", "20.11.2024", "21.11.2024"] },
+    "Radosław": { remaining: 10, daysOff: ["25.XI.2024"] },
+    "Paulina": { remaining: 10, daysOff: ["12.03.2024", "13.03.2024", "26.03.2024", "15.04.2024", "09.05.2024", "22.05.2024", "31.05.2024", "06.06.2024", "12.06.2024", "25.06.2024", "26.07.2024", "05.09.2024", "09.09.2024", "17.09.2024", "23.09.2024", "03.10.2024", "04.10.2024", "08.10.2024"] },
+    "Monika": { remaining: 4, daysOff: ["01.02.2024", "02.02.2024", "05.02.2024", "14.03.2024", "29.03.2024", "22.04.2024", "02.05.2024", "10.05.2024", "13.05.2024", "31.05.2024", "11.07.2024", "05.08.2024", "06.08.2024", "07.08.2024", "08.08.2024", "09.08.2024", "12.08.2024", "13.08.2024", "14.08.2024", "16.08.2024", "10.09.2024", "04.10.2024", "31.10.2024", "06.11.2024"] },
+    "Michał": { remaining: 4, daysOff: ["24.04.2024", "25.04.2024", "26.04.2024", "31.05.2024", "11.06.2024", "25.06.2024", "15.07.2024", "16.07.2024", "17.07.2024", "29.07.2024", "30.07.2024", "31.07.2024", "01.08.2024", "02.08.2024", "05.08.2024", "06.08.2024", "07.08.2024", "08.08.2024", "09.08.2024", "17.09.2024", "25.09.2024"] },
+    "Ewa B": { remaining: 4, daysOff: ["23.12.2024", "24.12.2024", "27.12.2024"] },
+    "Dariusz": { remaining: 8, daysOff: ["19.04.2024", "07.05.2024", "23.05.2024", "03.06.2024", "19.06.2024", "27.06.2024", "04.07.2024", "18.07.2024", "19.07.2024", "29.07.2024", "30.07.2024", "31.07.2024", "01.08.2024", "02.08.2024", "16.09.2024", "19.09.2024", "24.09.2024", "10.10.2024", "07.11.2024"] },
+    "Kamil P": { remaining: 10, daysOff: ["27.12.2024", "30.12.2024", "31.12.2024", "02.01.2025", "03.01.2025"] },
+    "Marcin S": { remaining: 10, daysOff: ["19.11.2024"] },
+    "Daniel": { remaining: 6, daysOff: [] },
+    "Marcin W": { remaining: 4, daysOff: ["16.12.2024", "17.12.2024", "18.12.2024", "19.12.2024", "20.12.2024"] },
+    "Agnieszka": { remaining: 2, daysOff: ["23.12.2024", "24.12.2024", "27.12.2024", "30.12.2024", "31.12.2024"] },
+    "Karolina": { remaining: 6, daysOff: ["06.12.2024", "27.12.2024", "30.12.2024", "31.12.2024"] },
+    "Kamil S": { remaining: 6, daysOff: [] },
+    "Paweł SZ": { remaining: 7, daysOff: ["19.01.2024", "22.02.2024", "23.02.2024", "22.03.2024", "02.05.2024", "03.06.2024", "04.07.2024", "05.07.2024", "16.07.2024", "05.08.2024", "06.08.2024", "07.08.2024", "08.08.2024", "09.08.2024", "12.08.2024", "13.08.2024", "14.08.2024", "17.10.2024", "18.11.2024"] },
+    "Kamil F": { remaining: 6, daysOff: ["02.05.2024", "03.06.2024", "04.06.2024", "05.06.2024", "06.06.2024", "07.06.2024", "10.06.2024", "11.06.2024", "12.06.2024", "13.06.2024", "14.06.2024", "19.08.2024", "11.10.2024", "05.11.2024"] },
+    "Sebastian": { remaining: 8, daysOff: ["19.02.2024", "14.05.2024", "21.05.2024", "10.04.2024", "11.04.2024", "09.07.2024", "10.07.2024", "21.08.2024", "16.09.2024", "10.10.2024", "16.10.2024", "06.11.2024"] }
+};
+    };
 
-    <script>
-        // List of users with remaining days and their taken holidays
-        const leaveData = {
-            "Paweł": { urlopy: ["22.III", "17.IV", "22.IV", "23.IV", "2.V", "29.V", "1.VII", "2.VII", "3.VII", "4.VII", "5.VII", "29.VIII", "30.VIII", "5.IX", "10.X", "23.X", "28.X", "8.XI", "12.XI"], dniUrlopu: 7 },
-            "Artur": { urlopy: ["22.IV", "6.V", "22.VII", "26.VIII", "18.IX", "1.X", "18.X"], dniUrlopu: 19 },
-            "Ewa": { urlopy: ["28.III", "16.IV", "24.IV", "25.IV", "20.V", "28.V", "29.V", "31.V", "20.VI", "8.VII", "9.VII", "10.VII", "11.VII", "12.VII", "8.VIII", "16.VIII", "29.VIII", "30.VIII", "2.IX", "3.IX", "16.X", "17.X", "18.X", "28.X"], dniUrlopu: 4 },
-            "Radosław": { urlopy: ["16.V", "20.V", "10.VI", "17.VI", "22.VII", "23.VII", "24.VII", "25.VII", "26.VII", "29.VII", "16.VIII", "9.IX", "10.IX", "11.X", "22.X", "25.XI"], dniUrlopu: 10 },
-            "Paulina": { urlopy: ["12.III", "13.III", "26.III", "15.IV", "9.V", "22.V", "31.V", "6.VI", "12.VI", "25.VI", "26.VII", "5.IX", "9.IX", "17.IX", "23.IX", "3.X", "4.X", "8.X"], dniUrlopu: 10 },
-            "Monika": { urlopy: ["1.II", "2.II", "5.II", "14.III", "29.III", "22.IV", "2.V", "10.V", "13.V", "31.V", "11.VII", "5.VIII", "6.VIII", "7.VIII", "8.VIII", "9.VIII", "12.VIII", "13.VIII", "14.VIII", "16.VIII", "10.IX", "4.X", "31.X", "6.XI"], dniUrlopu: 4 },
-            "Michał": { urlopy: ["24.IV", "25.IV", "26.IV", "31.V", "11.VI", "25.VI", "15.VII", "16.VII", "17.VII", "29.VII", "30.VII", "31.VII", "1.VIII", "2.VIII", "5.VIII", "6.VIII", "7.VIII", "8.VIII", "9.VIII", "17.IX", "25.IX"], dniUrlopu: 5 },
-            "Ewa B": { urlopy: [], dniUrlopu: 4 },
-            "Dariusz": { urlopy: ["19.IV", "7.V", "23.V", "3.VI", "19.VI", "27.VI", "4.VII", "18.VII", "19.VII", "29.VII", "30.VII", "31.VII", "1.VIII", "2.VIII", "16.IX", "19.IX", "24.IX", "10.X", "7.XI"], dniUrlopu: 9 },
-            "Kamil P": { urlopy: ["26.III", "26.IV", "13.V", "14.V", "15.V", "16.V", "17.V", "3.VII", "15.VII", "19.IX", "20.IX", "9.X", "12.XI", "27.XII", "30.XII", "31.XII", "2.I", "3.I"], dniUrlopu: 10 },
-            "Marcin S": { urlopy: ["17.IV", "9.V", "15.V", "13.VI", "14.VI", "17.VI", "18.VI", "19.VI", "20.VI", "21.VI", "18.VII", "22.VIII", "23.VIII", "3.IX", "11.IX", "20.IX", "24.IX", "25.IX", "26.IX", "21.X"], dniUrlopu: 10 },
-            "Daniel": { urlopy: ["20.II", "2.V", "13.V", "14.V", "15.V", "16.V", "17.V", "14.VI", "17.VI", "18.VI", "19.VI", "20.VI", "21.VI", "16.VIII", "27.VIII", "30.IX", "1.X", "2.X", "3.X", "4.X"], dniUrlopu: 6 },
-            "Marcin W": { urlopy: ["31.V", "15.VII", "16.VII", "17.VII", "19.VIII", "20.VIII", "21.VIII", "22.VIII", "23.VIII", "26.VIII", "27.VIII", "28.VIII", "29.VIII", "30.VIII", "2.IX", "18.IX", "28.X", "16.XII", "17.XII", "18.XII", "19.XII", "20.XII"], dniUrlopu: 4 },
-            "Agnieszka": { urlopy: ["29.III", "12.IV", "8.V", "31.V", "4.VI", "10.VII", "31.VII", "12.VIII", "13.VIII", "14.VIII", "16.VIII", "19.VIII", "20.VIII", "21.VIII", "22.VIII", "23.VIII", "26.IX", "27.IX", "9.X", "7.XI"], dniUrlopu: 8 },
-            "Karolina": { urlopy: ["15.IV", "2.V", "23.V", "6.VI", "7.VI", "10.VI", "11.VI", "12.VI", "13.VI", "14.VI", "12.VII", "2.VIII", "26.VIII", "13.IX", "17.X", "31.X"], dniUrlopu: 10 },
-            "Kamil S": { urlopy: ["10.V", "13.V", "31.V", "24.VI", "25.VI", "26.VI", "27.VI", "28.VI", "2.IX", "3.IX", "4.IX", "5.IX", "6.IX", "9.IX", "10.IX", "11.IX", "12.IX", "13.IX", "26.IX", "8.XI"], dniUrlopu: 6 },
-            "Sebastian": { urlopy: ["19.II", "14.V", "21.V", "10.IV", "11.IV", "9.VII", "10.VII", "21.VIII", "16.IX", "10.X", "16.X", "6.XI"], dniUrlopu: 8 }
-        };
-
-        // Date from which the leaves will be counted (18.11.2024)
-        const startDate = new Date("2024-11-18");
-
-        // Function to add a leave for an employee
-        function addLeave(person) {
-            const leaveDate = prompt("Wprowadź datę urlopu (yyyy-mm-dd):");
-            const leaveDateObj = new Date(leaveDate);
-            if (leaveDate && !leaveData[person].urlopy.includes(leaveDate)) {
-                if (leaveDateObj >= startDate) {
-                    leaveData[person].urlopy.push(leaveDate);
-                    updateTable();
-                } else {
-                    alert("Urlop nie może być w przeszłości.");
+    // Funkcja do aktualizacji, kto jest na urlopie
+    function updateVacationStatus() {
+        const today = new Date("2024-11-18");
+        let vacationMessage = '';
+        let futureDates = [today, new Date(today.getTime() + 86400000), new Date(today.getTime() + 2 * 86400000)];
+        
+        // Sprawdzamy, kto jest na urlopie w nadchodzących dniach
+        futureDates.forEach(date => {
+            let dateString = date.toISOString().split("T")[0];
+            vacationMessage += `<h4>Na urlopie w dniu ${dateString}: </h4><ul>`;
+            for (const person in vacationData) {
+                if (vacationData[person].daysOff.includes(dateString)) {
+                    vacationMessage += `<li>${person}</li>`;
                 }
-            } else {
-                alert("Data już została dodana lub nieprawidłowy format!");
             }
-        }
+            vacationMessage += `</ul>`;
+        });
+        
+        document.getElementById('current-vacations').innerHTML = vacationMessage;
+    }
 
-        // Function to update the table with the leave data
-        function updateTable() {
-            Object.keys(leaveData).forEach(person => {
-                const leaveListCell = document.getElementById(`leaveList-${person}`);
-                const remainingDaysCell = document.getElementById(`remaining-${person}`);
-                leaveListCell.innerHTML = leaveData[person].urlopy.join(", ");
-                remainingDaysCell.innerHTML = 26 - leaveData[person].dniUrlopu;
-            });
+    // Funkcja do usuwania daty urlopu
+    function removeDate(person, date) {
+        const personData = vacationData[person];
+        const index = personData.daysOff.indexOf(date);
+        if (index > -1) {
+            personData.daysOff.splice(index, 1);
+            alert(`${person} ma teraz ${personData.remaining - personData.daysOff.length} dni urlopu.`);
         }
+    }
 
-        // Initial update of the table when the page loads
-        updateTable();
-    </script>
+    // Inicjalizacja strony
+    updateVacationStatus();
+</script>
 </body>
 </html>
