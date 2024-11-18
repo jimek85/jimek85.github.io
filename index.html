@@ -1,36 +1,41 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zarządzanie Urlopami</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Urlopowy</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <header>
+    <h1>System Zarządzania Urlopami</h1>
+    <p>Lista urlopów pracowników</p>
+  </header>
 
-    <header>
-        <h1>System Zarządzania Urlopami</h1>
-    </header>
+  <main>
+    <div class="container">
+      <h2>Dodaj nowy urlop</h2>
+      <form id="leaveForm">
+        <label for="name">Imię i nazwisko:</label>
+        <input type="text" id="name" required>
 
-    <section id="urlop-form">
-        <h2>Dodaj Nowy Urlop</h2>
-        <form id="add-leave-form">
-            <label for="name">Imię:</label>
-            <input type="text" id="name" required>
+        <label for="date">Data urlopu:</label>
+        <input type="date" id="date" required>
 
-            <label for="dates">Daty Urlopu (np. 20.12-25.12):</label>
-            <input type="text" id="dates" required>
+        <button type="submit">Dodaj urlop</button>
+      </form>
 
-            <button type="submit">Dodaj Urlop</button>
-        </form>
-    </section>
+      <h2>Lista zapisanych urlopów</h2>
+      <div id="leaveList">
+        <!-- Lista urlopów będzie się wyświetlać tutaj -->
+      </div>
+    </div>
+  </main>
 
-    <section id="urlop-list">
-        <h2>Lista Urlopów</h2>
-        <input type="date" id="filter-date" placeholder="Wyszukaj po dacie">
-        <ul id="leave-list"></ul>
-    </section>
+  <footer>
+    <p>&copy; 2024 - System Urlopowy</p>
+  </footer>
 
-    <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
